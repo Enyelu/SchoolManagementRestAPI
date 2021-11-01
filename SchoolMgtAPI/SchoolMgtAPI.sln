@@ -3,9 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31808.319
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolMgtAPI", "SchoolMgtAPI\SchoolMgtAPI.csproj", "{7423CDD9-ACB9-408D-9CEC-0552921B5232}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolMgtAPI", "SchoolMgtAPI\SchoolMgtAPI.csproj", "{7423CDD9-ACB9-408D-9CEC-0552921B5232}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{338CF369-1107-4478-910F-EA1C6D5A9914}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{338CF369-1107-4478-910F-EA1C6D5A9914}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{7DA041EB-4640-4CC2-A6D6-D965FD8F1D50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{4B7C26BF-02BA-4DBB-8EEB-7E9F80BC3223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seeder", "Seeder\Seeder.csproj", "{22676122-30BA-47AE-84D9-EC15D9678FBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{408AABCE-F0B5-4EF8-B66A-C108BC0DD99D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{A0C2002F-4BA5-43DE-A6E9-6605583B2644}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +31,26 @@ Global
 		{338CF369-1107-4478-910F-EA1C6D5A9914}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{338CF369-1107-4478-910F-EA1C6D5A9914}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{338CF369-1107-4478-910F-EA1C6D5A9914}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DA041EB-4640-4CC2-A6D6-D965FD8F1D50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DA041EB-4640-4CC2-A6D6-D965FD8F1D50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DA041EB-4640-4CC2-A6D6-D965FD8F1D50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DA041EB-4640-4CC2-A6D6-D965FD8F1D50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B7C26BF-02BA-4DBB-8EEB-7E9F80BC3223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B7C26BF-02BA-4DBB-8EEB-7E9F80BC3223}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B7C26BF-02BA-4DBB-8EEB-7E9F80BC3223}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B7C26BF-02BA-4DBB-8EEB-7E9F80BC3223}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22676122-30BA-47AE-84D9-EC15D9678FBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22676122-30BA-47AE-84D9-EC15D9678FBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22676122-30BA-47AE-84D9-EC15D9678FBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22676122-30BA-47AE-84D9-EC15D9678FBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{408AABCE-F0B5-4EF8-B66A-C108BC0DD99D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{408AABCE-F0B5-4EF8-B66A-C108BC0DD99D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{408AABCE-F0B5-4EF8-B66A-C108BC0DD99D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{408AABCE-F0B5-4EF8-B66A-C108BC0DD99D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0C2002F-4BA5-43DE-A6E9-6605583B2644}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0C2002F-4BA5-43DE-A6E9-6605583B2644}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0C2002F-4BA5-43DE-A6E9-6605583B2644}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0C2002F-4BA5-43DE-A6E9-6605583B2644}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
