@@ -22,24 +22,14 @@ namespace Repository.Implementations
         public async Task<Course> GetCourseByIdOrCourseCodeAsync(string courseCode = null, string courseId = null)
         {
             string searchTerm = courseCode ?? courseId;
-            var courseById = await _context.Courses
+            var course = await _context.Courses
                                            .Include(x => x.Students)
                                            .Include(x => x.Department)
                                            .Include(x => x.Lecturers)
-                                           .FirstOrDefaultAsync(x => x.Id == searchTerm);
-            var courseByCode = await _context.Courses
-                                           .Include(x => x.Students)
-                                           .Include(x => x.Department)
-                                           .Include(x => x.Lecturers)
-                                           .FirstOrDefaultAsync(x => x.Id == searchTerm);
-
-            if (courseById == null)
+                                           .FirstOrDefaultAsync(x => x.Id == searchTerm || x.CourseCode == searchTerm);
+            if (course != null)
             {
-                return courseByCode;
-            }
-            else if(courseByCode == null)
-            {
-                return courseById;
+                return course;
             }
             return null;
         }
@@ -52,6 +42,26 @@ namespace Repository.Implementations
                 course.IsActive = false;
             }
             return course.IsActive;
+        }
+
+        public async Task<IEnumerable<Course>> CourseLecturers(string courseCode = null, string courseId = null)
+        {
+            string searchTerm = courseCode ??= courseId;
+            var courseWithLecturers = _context.Courses.Include(x => x.Lecturers).Where(x => x.CourseCode == courseCode || x.Id == courseId);
+
+            if (courseWithLecturers != null) { return await courseWithLecturers.ToListAsync(); }
+
+            return null;
+        }
+
+        public async Task<IEnumerable<Course>> CourseStudents(string courseCode = null, string courseId = null)
+        {
+            string searchTerm = courseCode ??= courseId;
+            var courseWithLecturers = _context.Courses.Include(x => x.Students).Where(x => x.CourseCode == courseCode || x.Id == courseId);
+
+            if (courseWithLecturers != null) { return await courseWithLecturers.ToListAsync(); }
+
+            return null;
         }
     }
 }
