@@ -11,7 +11,8 @@ namespace Models
         public string Avatar { get; set; }  
         public bool IsActive { get; set; }
         public string BirthDate { get; set; }
-        public DateTime DateCreated { get; set; }
+        public string DateCreated { get; set; }
+        public string DateModified { get; set; }
         public Address Addresses { get; set; }
         public Lecturer Lecturer {  get; set; }
         public Student Student { get; set; }
