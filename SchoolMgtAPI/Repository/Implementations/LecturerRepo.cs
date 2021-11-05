@@ -25,23 +25,9 @@ namespace Repository.Implementations
                                                    .Include(x => x.Department)
                                                    .FirstOrDefaultAsync(x => x.AppUserId == lecturerId);
            
-            if(lecturer != null)
-            {
-                return lecturer;
-            }
+            if(lecturer != null) { return lecturer; }
+            
             return null;
-        }
-
-        public async Task<bool>DeactivateLecturerAsync(string lecturerId)
-        {
-            var lecturer = await GetLecturerDetailAsync(lecturerId);
-
-            if(lecturer != null)
-            {
-                lecturer.AppUser.IsActive = false;
-                return true;
-            }
-            return false;
         }
     }
 }

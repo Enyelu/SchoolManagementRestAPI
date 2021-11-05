@@ -33,6 +33,15 @@ namespace Utilities.Mappings
                 .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Addresses.StreetNumber))
                 .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Addresses.StreetNumber));
 
+            //mapping for course registration
+            CreateMap<CourseDto, Course>()
+                .ForMember(x => x.Id, y => y.MapFrom(z => z.Id))
+                .ForMember(x => x.Name, y => y.MapFrom(z => z.Name))
+                .ForMember(x => x.CourseCode, y => y.MapFrom(z => z.CourseCode))
+                .ForMember(x => x.DateCreated, y => y.MapFrom(z => z.DateCreated))
+                .ForMember(x => x.IsActive, y => y.MapFrom(z => z.IsActive))
+                .ForMember(x => x.Department, y => y.MapFrom(z => z.Department));
+
             //mapping  for course lecturers details
             CreateMap<Course, LecturerModel>()
                 .ForMember(x => x.Lecturer, y => y.MapFrom(z => z.Lecturers));
@@ -43,8 +52,39 @@ namespace Utilities.Mappings
             
             CreateMap<CourseUpdateDto, Course>()
                 .ForMember(x => x.Name, y => y.MapFrom(z => z.Name))
-                .ForMember(x => x.CourseCode, y => y.MapFrom(z => z.CourseCode));
+                .ForMember(x => x.CourseCode, y => y.MapFrom(z => z.NewCourseCode));
 
+            //mapping to read non-academic staff response
+            CreateMap<NonAcademicStaff, NonAcademicStaffResponseDto>()
+                .ForMember(x => x.FullName, y => y.MapFrom(z => z.AppUser.FirstName + " " + z.AppUser.MiddleName + " " + z.AppUser.LastName))
+                .ForMember(x => x.Position, y => y.MapFrom(z => z.DutyPost.Name))
+                .ForMember(x => x.Avatar, y => y.MapFrom(z => z.AppUser.Avatar))
+                .ForMember(x => x.IsActive, y => y.MapFrom(z => z.AppUser.IsActive))
+                .ForMember(x => x.BirthDate, y => y.MapFrom(z => z.AppUser.BirthDate))
+                .ForMember(x => x.DateCreated, y => y.MapFrom(z => z.AppUser.DateCreated))
+                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Addresses.StreetNumber))
+                .ForMember(x => x.City, y => y.MapFrom(z => z.AppUser.Addresses.City))
+                .ForMember(x => x.State, y => y.MapFrom(z => z.AppUser.Addresses.State))
+                .ForMember(x => x.Country, y => y.MapFrom(z => z.AppUser.Addresses.Country))
+                .ForMember(x => x.Email, y => y.MapFrom(z => z.AppUser.Email));
+
+            //mapping for lecturer response
+            CreateMap<AppUser, LecturerResponseDto>()
+                .ForMember(x => x.FirstName, y => y.MapFrom(z => z.FirstName))
+                .ForMember(x => x.MiddleName, y => y.MapFrom(z => z.MiddleName))
+                .ForMember(x => x.LastName, y => y.MapFrom(z => z.LastName))
+                .ForMember(x => x.Email, y => y.MapFrom(z => z.Email))
+                .ForMember(x => x.Avatar, y => y.MapFrom(z => z.Avatar))
+                .ForMember(x => x.IsActive, y => y.MapFrom(z => z.IsActive))
+                .ForMember(x => x.BirthDate, y => y.MapFrom(z => z.BirthDate))
+                .ForMember(x => x.DateCreated, y => y.MapFrom(z => z.DateCreated))
+                .ForMember(x => x.DateModified, y => y.MapFrom(z => z.DateModified))
+                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.Addresses.StreetNumber))
+                .ForMember(x => x.City, y => y.MapFrom(z => z.Addresses.City))
+                .ForMember(x => x.State, y => y.MapFrom(z => z.Addresses.State))
+                .ForMember(x => x.Country, y => y.MapFrom(z => z.Addresses.Country))
+                .ForMember(x => x.Department, y => y.MapFrom(z => z.Lecturer.Department.Name))
+                .ForMember(x => x.Courses, y => y.MapFrom(z => z.Lecturer.Courses));
         }
     }
 }

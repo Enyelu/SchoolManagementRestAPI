@@ -19,31 +19,37 @@ namespace Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<Response<string>> AddCourseAsync(Course course)
+        public async Task<Response<string>> AddCourseAsync(CourseDto courseDto)
         {
+            var course = _mapper.Map<Course>(courseDto);
+
             await _unitOfWork.Course.AddAsync(course);
             await _unitOfWork.SaveChangesAsync();
             return Response<string>.Success(null, $"Successfully added {course.Name}");
         }
-        public async Task<Response<Course>> GetCourseByIdOrCourseCodeAsync(string courseCode = null, string courseId = null)
+
+        public async Task<Response<CourseDto>> GetCourseByIdOrCourseCodeAsync(string courseCode = null, string courseId = null)
         {
-            var course = await _unitOfWork.Course.GetCourseByIdOrCourseCodeAsync(courseCode, courseId);
-            if (course == null)
+            var readCourse = await _unitOfWork.Course.GetCourseByIdOrCourseCodeAsync(courseCode, courseId);
+            if (readCourse == null)
             {
-                return Response<Course>.Success(course, "Success");
+                var course = _mapper.Map<CourseDto>(readCourse);
+                return Response<CourseDto>.Success(course, "Success");
             }
-            return Response<Course>.Fail("Course not found");
+            return Response<CourseDto>.Fail("Course not found");
         }
+
         public async Task<Response<string>> DeactivateCourseAsync(string courseCode = null, string courseId = null)
         {
-            var response = await _unitOfWork.Course.DeactivateCourseAsync(courseCode, courseId);
-            if (response == false)
+            var course = await _unitOfWork.Course.GetCourseByIdOrCourseCodeAsync(courseCode, courseId);
+            if (course != null)
             {
+                course.IsActive = false;
+                _unitOfWork.Course.Update(course);
                 await _unitOfWork.SaveChangesAsync();
-                return Response<string>.Success(null, $"Successfully updated deactivated");
+                return Response<string>.Success(null, $"Successfully deactivated");
             }
-            return Response<string>.Fail($"Successfully updated deactivated");
-
+            return Response<string>.Fail($"Course not found");
         }
 
         public async Task<Response<string>> UpdateCourseAsync(CourseUpdateDto course)
@@ -54,8 +60,8 @@ namespace Services.Implementations
             if(searchedCourse != null)
             {
                 var mappingResponse = _mapper.Map<Course>(course);
-                searchedCourse.CourseCode = mappingResponse.CourseCode;
-                searchedCourse.Name = mappingResponse.Name;
+                searchedCourse.CourseCode = mappingResponse.CourseCode ??= searchedCourse.CourseCode;
+                searchedCourse.Name = mappingResponse.Name ??= searchedCourse.Name;
 
                 _unitOfWork.Course.Update(searchedCourse);
                 await _unitOfWork.SaveChangesAsync();
@@ -72,13 +78,8 @@ namespace Services.Implementations
             if (response != null)
             {
                 var mappingResponse = _mapper.Map<StudentModel>(response);
-
-                foreach (var student in mappingResponse.Students)
-                {
-                    var singleStudent = _mapper.Map<ReadStudentResponseDto>(student);
-                    studentsList.Add(singleStudent);
-                    return Response<IEnumerable < ReadStudentResponseDto >>.Success(studentsList, "Success");
-                }
+                var singleStudent = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(mappingResponse);
+                return Response<IEnumerable < ReadStudentResponseDto >>.Success(studentsList, "Success");
             }
             return Response<IEnumerable<ReadStudentResponseDto>>.Fail($"No student offer {courseCode}"); ;
         }
@@ -87,27 +88,10 @@ namespace Services.Implementations
         {
             var LecturerList = new List<CourseLecturerResponseDto>();
             var response = await _unitOfWork.Course.CourseLecturers(courseCode, courseId);
-
+            
             if (response != null)
             {
-                var mappingResponse = _mapper.Map<LecturerModel>(response);
-                
-                foreach (var lecturer in mappingResponse.Lecturer)
-                {
-                    var lecturerInmappingResponse = new CourseLecturerResponseDto
-                    {
-                        FullName = $" {lecturer.AppUser.FirstName} {lecturer.AppUser.MiddleName} {lecturer.AppUser.LastName}",
-                        Avatar = lecturer.AppUser.Avatar,
-                        IsActive = lecturer.AppUser.IsActive,
-                        BirthDate = lecturer.AppUser.BirthDate,
-                        DateCreated = lecturer.AppUser.DateCreated,
-                        StreetNumber = lecturer.AppUser.Addresses.StreetNumber,
-                        City = lecturer.AppUser.Addresses.City,
-                        State = lecturer.AppUser.Addresses.State,
-                        Country = lecturer.AppUser.Addresses.Country
-                    };
-                    LecturerList.Add(lecturerInmappingResponse);
-                }
+                var mappingResponse = _mapper.Map<IEnumerable<LecturerModel>>(response);
                 return Response<IEnumerable<CourseLecturerResponseDto>>.Success(LecturerList, "Successful.");
             }
             return Response<IEnumerable<CourseLecturerResponseDto>>.Fail("No lecturer renders this course yet.");

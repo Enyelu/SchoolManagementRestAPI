@@ -25,9 +25,9 @@ namespace Services.Implementations
             _mapper = mapper; 
         }
         
-        public async Task<Response<ReadStudentResponseDto>> ReadStudentAsync(string studentId)
+        public async Task<Response<ReadStudentResponseDto>> ReadStudentAsync(string resgitrationNumber)
         {
-            var response = await _unitOfWork.Student.GetStudentAsync(studentId);
+            var response = await _unitOfWork.Student.GetStudentAsync(resgitrationNumber);
             var studentDetail = _mapper.Map<ReadStudentResponseDto>(response);
 
             if (studentDetail != null)
@@ -42,86 +42,57 @@ namespace Services.Implementations
             var students = await _unitOfWork.Student.GetAllStudentsInALevelAsync(studentsLevel);
             List<ReadStudentResponseDto> studentsDetail = new List<ReadStudentResponseDto>();
 
-            foreach (var student in students)
-            {
-                var studentDetail = _mapper.Map<ReadStudentResponseDto>(student);
-                studentsDetail.Add(studentDetail);
-            }
-
-            if(studentsDetail.Count == students.Count())
-            {
-                return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
-            }
-            return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
+            var studentDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
+           
+            return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
         }
 
         public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInADepartmentInALevelAsync(int studentsLevel, string department)
         {
             var students = await _unitOfWork.Student.GetAllStudentsInADepartmentInALevelAsync(studentsLevel, department);
-            List<ReadStudentResponseDto> studentsDetail = new List<ReadStudentResponseDto>();
 
-            foreach (var student in students)
+            if(students != null)
             {
-                var studentDetail = _mapper.Map<ReadStudentResponseDto>(student);
-                studentsDetail.Add(studentDetail);
-            }
-
-            if (studentsDetail.Count == students.Count())
-            {
+                var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
                 return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
             }
+
             return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
         }
 
         public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInAFacultyInALevelAsync(int studentsLevel, string faculty)
         {
             var students = await _unitOfWork.Student.GetAllStudentsInAFacultyInALevelAsync(studentsLevel, faculty);
-            List<ReadStudentResponseDto> studentsDetail = new List<ReadStudentResponseDto>();
-
-            foreach (var student in students)
+           
+            if(students != null)
             {
-                var studentDetail = _mapper.Map<ReadStudentResponseDto>(student);
-                studentsDetail.Add(studentDetail);
-            }
-
-            if (studentsDetail.Count == students.Count())
-            {
+                var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
                 return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
             }
+                
             return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
         }
 
         public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInDepartmentAsync(string department)
         {
             var students = await _unitOfWork.Student.GetAllStudentsInDepartmentAsync(department);
-            List<ReadStudentResponseDto> studentsDetail = new List<ReadStudentResponseDto>();
 
-            foreach (var student in students)
+            if(students != null)
             {
-                var studentDetail = _mapper.Map<ReadStudentResponseDto>(student);
-                studentsDetail.Add(studentDetail);
-            }
-
-            if (studentsDetail.Count == students.Count())
-            {
+                var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
                 return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
             }
+            
             return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
         }
 
         public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInFacultyAsync(string faculty)
         {
             var students = await _unitOfWork.Student.GetAllStudentsInFacultyAsync(faculty);
-            List<ReadStudentResponseDto> studentsDetail = new List<ReadStudentResponseDto>();
 
-            foreach (var student in students)
+            if(students != null)
             {
-                var studentDetail = _mapper.Map<ReadStudentResponseDto>(student);
-                studentsDetail.Add(studentDetail);
-            }
-
-            if (studentsDetail.Count == students.Count())
-            {
+                var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
                 return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
             }
             return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
@@ -131,78 +102,86 @@ namespace Services.Implementations
         {
             var students =  await _unitOfWork.Student.GetAllStudentsAsync();
 
-            List<ReadStudentResponseDto> studentsDetail = new List<ReadStudentResponseDto>();
-
-            foreach (var student in students)
+            if(students != null)
             {
-                var studentDetail = _mapper.Map<ReadStudentResponseDto>(student);
-                studentsDetail.Add(studentDetail);
-            }
-
-            if (studentsDetail.Count == students.Count())
-            {
+                var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
                 return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
             }
             return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
         }
 
-        public async Task<Response<string>> DeactivateStudentAsync(string studentId)
+        public async Task<Response<string>> DeactivateStudentAsync(string registrationNumber)
         {
-            await _unitOfWork.Student.DeactivateStudentAsync(studentId);
-            await _unitOfWork.SaveChangesAsync();
-            return Response<string>.Success(null, "Student deactivated successfully");
+            var student = await _unitOfWork.Student.GetStudentAsync(registrationNumber);
+            
+            if(student != null)
+            {
+                student.AppUser.IsActive = false;
+                _unitOfWork.Student.Update(student);
+                await _unitOfWork.SaveChangesAsync();
+                return Response<string>.Success(null, "Student deactivated successfully");
+            }
+            return Response<string>.Fail("Student not found");
         }
-        public async Task<Response<string>> CheckStudentIsActiveAsync(string studentId)
+        public async Task<Response<string>> CheckStudentIsActiveAsync(string registrationNumber)
         {
-            var response = await _unitOfWork.Student.CheckStudentIsActiveAsync(studentId);
-
-            if(response == true)
+            var student = await _unitOfWork.Student.GetStudentAsync(registrationNumber);
+            var studentStatus = student.AppUser.IsActive;
+            
+            if(studentStatus)
             {
                 return Response<string>.Success(null, "Student is active");
             }
+            
             return Response<string>.Fail("Student is not active");
         }
 
-        public async Task<Response<IEnumerable<string>>> RegisterCoursesAsync(string registrationNumber, ICollection<string> courses)
+        public async Task<Response<IEnumerable<string>>> RegisterCoursesAsync(string studentId, ICollection<string> courses)
         {
-            var response = await _unitOfWork.Student.RegisterCoursesAsync(registrationNumber, courses);
+            var student = await _unitOfWork.Student.GetStudentAsync(null, studentId);
 
-            if(response != null)
+            if (student != null)
             {
-                var student = await _unitOfWork.Student.GetStudentAsync(registrationNumber);
-
+                var courseCount = student.Courses.Count();
                 foreach (var course in courses)
                 {
                     var searchedCourse = await _unitOfWork.Course.GetCourseByIdOrCourseCodeAsync(course);
+                    student.Courses.Add(course);
                     searchedCourse.Students.Add(student);
+                    _unitOfWork.Student.Update(student);
+                    _unitOfWork.Course.Update(searchedCourse);
                 }
                 await _unitOfWork.SaveChangesAsync();
-                return Response<IEnumerable<string>>.Success(response, "Registration successful");
+                return Response<IEnumerable<string>>.Success(student.Courses, "Registration successful");
             }
-            string failMessage = "An error occured while adding courses. Check the courses added then add back unsuccessful courses";
-            return Response<IEnumerable<string>>.Fail(failMessage, (int)HttpStatusCode.ExpectationFailed);
+            return Response<IEnumerable<string>>.Fail("An error occured while adding courses.", (int)HttpStatusCode.ExpectationFailed);
         }
-
-        public async Task<Response<IEnumerable<string>>> RemoveCoursesAsync(string registrationNumber, ICollection<string> courses)
+       
+        public async Task<Response<IEnumerable<string>>> RemoveCoursesAsync(string studentId, ICollection<string> courses)
         {
-            var response = await _unitOfWork.Student.RemoveCoursesAsync(registrationNumber, courses);
 
-            if (response)
+            var student = await _unitOfWork.Student.GetStudentAsync(null, studentId);
+            var registeredCourses = student.Courses;
+
+            if(student != null)
             {
-                var student = await _unitOfWork.Student.GetStudentAsync(registrationNumber);
-
                 foreach (var course in courses)
                 {
                     var searchedCourse = await _unitOfWork.Course.GetCourseByIdOrCourseCodeAsync(course);
-                    searchedCourse.Students.Remove(student);
+                    if (registeredCourses.Contains(course))
+                    {
+                        registeredCourses.Remove(course);
+                        searchedCourse.Students.Remove(student);
+                        _unitOfWork.Student.Update(student);
+                        _unitOfWork.Course.Update(searchedCourse);
+                    }
                 }
                 await _unitOfWork.SaveChangesAsync();
                 return Response<IEnumerable<string>>.Success(courses, "Course(s) removal successful");
             }
-            string failMessage = "An error occured while adding courses. Check the courses added then add back unsuccessful courses";
-            return Response<IEnumerable<string>>.Fail(failMessage, (int)HttpStatusCode.ExpectationFailed);
+            return Response<IEnumerable<string>>.Fail("An error occured while removing courses.", (int)HttpStatusCode.ExpectationFailed);
         }
-
+        
         public async Task<Response<IEnumerable<string>>> ReadRegisteredCoursesAsync(string studentId)
         {
             var courses = await _unitOfWork.Student.GetRegisteredCoursesAsync(studentId);
