@@ -2,18 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Repository.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Repository.Implementations
 {
-    public class NonAcademicStaffRepo : INonAcademicStaffRepo
+    public class NonAcademicStaffRepo : GenericRepository<NonAcademicStaff>, INonAcademicStaffRepo
     {
         private readonly SchoolDbContext _context;
-        public NonAcademicStaffRepo(SchoolDbContext context)
+        public NonAcademicStaffRepo(SchoolDbContext context) : base(context)
         {
             _context = context; 
         }
@@ -30,29 +28,9 @@ namespace Repository.Implementations
         {
             var staff = await _context.NonAcademicStaff
                                       .Include(x => x.AppUser)
-                                      .Include(x => x.DutyPost).ToListAsync();
+                                      .Include(x => x.DutyPost).Where(x => x.AppUser.IsActive == true).ToListAsync();
             return staff;
         }
 
-        public async Task<bool> DeactivateNonAcademicStaffAsync(string staffId)
-        {
-            var staff = await GetNonAcademicStaffAsync(staffId);
-            if(staff != null)
-            {
-                var response = staff.AppUser.IsActive = false;
-                return response;
-            }
-            return false;
-        }
-
-        public bool UpdateNonAcademicStaff(NonAcademicStaff staff)
-        {
-           var response = _context.NonAcademicStaff.Update(staff);
-            if(response.State > 0)
-            {
-                return true;
-            }
-            return false;
-        }
     }
 }

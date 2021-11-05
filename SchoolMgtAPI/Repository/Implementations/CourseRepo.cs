@@ -27,23 +27,11 @@ namespace Repository.Implementations
                                            .Include(x => x.Department)
                                            .Include(x => x.Lecturers)
                                            .FirstOrDefaultAsync(x => x.Id == searchTerm || x.CourseCode == searchTerm);
-            if (course != null)
-            {
-                return course;
-            }
+            if (course != null) { return course; }
+            
             return null;
         }
-
-        public async Task<bool> DeactivateCourseAsync(string courseCode = null, string courseId = null)
-        {
-            var course = await GetCourseByIdOrCourseCodeAsync(courseCode, courseId);
-            if(course.IsActive == true)
-            {
-                course.IsActive = false;
-            }
-            return course.IsActive;
-        }
-
+         
         public async Task<IEnumerable<Course>> CourseLecturers(string courseCode = null, string courseId = null)
         {
             string searchTerm = courseCode ??= courseId;

@@ -10,6 +10,5 @@ namespace Repository.Interfaces
     public interface ILecturerRepo :IGenericRepository<Lecturer>
     {
         Task<Lecturer> GetLecturerDetailAsync(string lecturerId);
-        Task<bool> DeactivateLecturerAsync(string lecturerId);
     }
 }

@@ -20,16 +20,18 @@ namespace Repository.Implementations
             studentTable = _context.Set<Student>();
         }
 
-        public async Task<Student> GetStudentAsync(string registrationNumber)
+        public async Task<Student> GetStudentAsync(string registrationNumber = null, string studentId = null)
         {
-            if (registrationNumber != null)
+            string searchTerm = registrationNumber ??= studentId;
+            if (searchTerm != null)
             {
                 var student = await studentTable
                           .Include(x => x.AppUser)
                           .Include(x => x.ClassAdviser)
                           .Include(x => x.Department)
                           .Include(x => x.Courses)
-                          .FirstOrDefaultAsync(x => x.RegistrationNumber == registrationNumber);
+                          .FirstOrDefaultAsync(x => x.RegistrationNumber == searchTerm 
+                                                 || x.AppUser.Id == searchTerm);
 
                 if (student != null) { return student; }
             }
@@ -43,10 +45,8 @@ namespace Repository.Implementations
                           .Include(x => x.Faculty)
                           .Where(x => x.Level == studentsLevel);
 
-            if (students != null)
-            {
-                return await students.ToListAsync();
-            }
+            if (students != null) { return await students.ToListAsync(); }
+           
             return null;
         }
 
@@ -57,10 +57,8 @@ namespace Repository.Implementations
                           .Include(x => x.Department)
                           .Where(x => x.Level == studentsLevel && x.Department.Name.Trim().ToLower() == department.Trim().ToLower());
 
-            if (students != null)
-            {
-                return await students.ToListAsync();
-            }
+            if (students != null) { return await students.ToListAsync(); }
+            
             return null;
         }
 
@@ -72,10 +70,8 @@ namespace Repository.Implementations
                           .Include(x => x.Faculty)
                           .Where(x => x.Level == studentsLevel && x.Faculty.Name.Trim().ToLower() == faculty.Trim().ToLower());
 
-            if (students != null)
-            {
-                return await students.ToListAsync();
-            }
+            if (students != null) { return await students.ToListAsync(); }
+           
             return null;
         }
 
@@ -87,10 +83,8 @@ namespace Repository.Implementations
                           .Include(x => x.Faculty)
                           .Where(x => x.Department.Name.Trim().ToLower() == department.Trim().ToLower());
 
-            if (students != null)
-            {
-                return await students.ToListAsync();
-            }
+            if (students != null) { return await students.ToListAsync(); }
+            
             return null;
         }
 
@@ -101,10 +95,8 @@ namespace Repository.Implementations
                           .Include(x => x.Faculty)
                           .Where(x => x.Faculty.Name.Trim().ToLower() == faculty.Trim().ToLower());
 
-            if (students != null)
-            {
-                return await students.ToListAsync();
-            }
+            if (students != null) { return await students.ToListAsync(); }
+            
             return null;
         }
 
@@ -117,75 +109,16 @@ namespace Repository.Implementations
                           .Include(x => x.Department)
                           .Include(x => x.Courses).Where(x => x.AppUser.IsActive == true);
             
-            if(students != null)
-            {
-                return await students.ToListAsync();
-            }
+            if(students != null) { return await students.ToListAsync(); }
             return null;
         }
-
-        public async Task DeactivateStudentAsync(string studentId)
-        {
-            var student = await GetStudentAsync(studentId);
-            student.AppUser.IsActive = false;
-        }
-
-        public async Task<bool> CheckStudentIsActiveAsync(string registrationNumber = null)
-        {
-            var student = await GetStudentAsync(registrationNumber);
-            var respone = student.AppUser.IsActive;
-            
-            return respone;
-        }
-
-        public async Task<IEnumerable<string>> RegisterCoursesAsync(string studentId, ICollection<string> courses)
-        {
-            var student = await GetStudentAsync(studentId);
-            var courseCount = student.Courses.Count;
-
-            if (student != null)
-            {
-                foreach (var course in courses)
-                {
-                    student.Courses.Add(course);
-                }
-                
-                if(student.Courses.Count.Equals(courses.Count) || (student.Courses.Count - courseCount).Equals(courses.Count))
-                {
-                    return student.Courses.ToList();
-                }
-            }
-            return null;
-        }
-
-        public async Task<bool> RemoveCoursesAsync(string studentId, ICollection<string> courses)
-        {
-            var student = await GetStudentAsync(studentId);
-            var courseCount = student.Courses.Count;
-            var registeredCourses = student.Courses;
-
-            foreach (var course in registeredCourses)
-            {
-                courses.Contains(course);
-                registeredCourses.Remove(course);
-            }
-
-            if(courseCount - student.Courses.Count == courses.Count)
-            {
-                return true;
-            }
-            return false;
-        }
-
         public async Task<IEnumerable<string>> GetRegisteredCoursesAsync(string studentId)
         {
            var student = await GetStudentAsync(studentId);
            var courses = student.Courses.ToList();
 
-            if(courses != null)
-            {
-                return courses;
-            }
+            if(courses != null) { return courses; }
+           
             return null;
         }
     }
