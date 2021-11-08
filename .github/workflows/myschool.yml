@@ -8,6 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: School Management Rest Api
+      working-directory: ./SchoolMgtAPI
       env:
         HEROKU_API_KEY: 439d7559-e1c5-40a0-98ad-0b3ce90f3daa
         APP_NAME: school-mgt-api
