@@ -6,6 +6,7 @@ namespace Models
     {
         [Key]
         public string AppUserId { get; set; }
+        public Department Department { get; set; }
         public NonAcademicStaffPosition DutyPost { get; set; }
         public AppUser AppUser { get; set; }    
     }
