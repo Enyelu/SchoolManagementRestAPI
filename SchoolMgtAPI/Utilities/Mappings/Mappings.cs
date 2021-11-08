@@ -105,8 +105,7 @@ namespace Utilities.Mappings
                 .ForMember(x => x.Department, y => y.MapFrom(z => z.Department.Name))
                 .ForMember(x => x.BirthDate, y => y.MapFrom(z => z.AppUser.BirthDate))
                 .ForMember(x => x.DateCreated, y => y.MapFrom(z => z.AppUser.DateCreated))
-                .ForMember(x => x.DateModified, y => y.MapFrom(z => z.AppUser.DateModified))
-                .ForMember(x => x, y => y.MapFrom(z => z));
+                .ForMember(x => x.DateModified, y => y.MapFrom(z => z.AppUser.DateModified));
 
             CreateMap<NonAcademicStaff, FacultyLecturerResponseDto>()
                .ForMember(x => x.FirstName, y => y.MapFrom(z => z.AppUser.FirstName))
@@ -117,8 +116,7 @@ namespace Utilities.Mappings
                .ForMember(x => x.Department, y => y.MapFrom(z => z.Department.Name))
                .ForMember(x => x.BirthDate, y => y.MapFrom(z => z.AppUser.BirthDate))
                .ForMember(x => x.DateCreated, y => y.MapFrom(z => z.AppUser.DateCreated))
-               .ForMember(x => x.DateModified, y => y.MapFrom(z => z.AppUser.DateModified))
-               .ForMember(x => x, y => y.MapFrom(z => z));
+               .ForMember(x => x.DateModified, y => y.MapFrom(z => z.AppUser.DateModified));
         }
     }
 }

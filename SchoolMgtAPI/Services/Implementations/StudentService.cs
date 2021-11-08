@@ -136,7 +136,7 @@ namespace Services.Implementations
             return Response<string>.Fail("Student is not active");
         }
 
-        public async Task<Response<IEnumerable<string>>> RegisterCoursesAsync(string studentId, ICollection<string> courses)
+        public async Task<Response<IEnumerable<Course>>> RegisterCoursesAsync(string studentId, ICollection<string> courses)
         {
             var student = await _unitOfWork.Student.GetStudentAsync(null, studentId);
 
@@ -146,15 +146,17 @@ namespace Services.Implementations
                 foreach (var course in courses)
                 {
                     var searchedCourse = await _unitOfWork.Course.GetCourseByIdOrCourseCodeAsync(course);
-                    student.Courses.Add(course);
+                    searchedCourse.Name = course;
+                    student.Courses.Add(searchedCourse);
                     searchedCourse.Students.Add(student);
                     _unitOfWork.Student.Update(student);
                     _unitOfWork.Course.Update(searchedCourse);
                 }
                 await _unitOfWork.SaveChangesAsync();
-                return Response<IEnumerable<string>>.Success(student.Courses, "Registration successful");
+                var result = student.Courses.ToList();
+                return Response<IEnumerable<Course>>.Success(result, "Registration successful")  ;
             }
-            return Response<IEnumerable<string>>.Fail("An error occured while adding courses.", (int)HttpStatusCode.ExpectationFailed);
+            return Response<IEnumerable<Course>>.Fail("An error occured while adding courses.", (int)HttpStatusCode.ExpectationFailed);
         }
        
         public async Task<Response<IEnumerable<string>>> RemoveCoursesAsync(string studentId, ICollection<string> courses)
@@ -168,9 +170,10 @@ namespace Services.Implementations
                 foreach (var course in courses)
                 {
                     var searchedCourse = await _unitOfWork.Course.GetCourseByIdOrCourseCodeAsync(course);
-                    if (registeredCourses.Contains(course))
+                   
+                    if (registeredCourses.Contains(searchedCourse))
                     {
-                        registeredCourses.Remove(course);
+                        registeredCourses.Remove(searchedCourse);
                         searchedCourse.Students.Remove(student);
                         _unitOfWork.Student.Update(student);
                         _unitOfWork.Course.Update(searchedCourse);
@@ -182,15 +185,15 @@ namespace Services.Implementations
             return Response<IEnumerable<string>>.Fail("An error occured while removing courses.", (int)HttpStatusCode.ExpectationFailed);
         }
         
-        public async Task<Response<IEnumerable<string>>> ReadRegisteredCoursesAsync(string studentId)
+        public async Task<Response<IEnumerable<Course>>> ReadRegisteredCoursesAsync(string studentId)
         {
             var courses = await _unitOfWork.Student.GetRegisteredCoursesAsync(studentId);
 
             if(courses != null)
             {
-                return Response<IEnumerable<string>>.Success(courses, "Successful");
+                return Response<IEnumerable<Course>>.Success(courses, "Successful");
             }
-            return Response<IEnumerable<string>>.Fail("No course has been registered");
+            return Response<IEnumerable<Course>>.Fail("No course has been registered");
         }
     }
 }
