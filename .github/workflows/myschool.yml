@@ -9,8 +9,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: School Management Rest Api
       env:
-        HEROKU_API_KEY: ${{secrets.SECRET_API_KEY}}
-        APP_NAME: ${{ secrets.SECRET_APP_NAME }}
+        HEROKU_API_KEY: 439d7559-e1c5-40a0-98ad-0b3ce90f3daa
+        APP_NAME: school-mgt-api
       run: |
         docker login --username=_ --password=$SECRET_API_KEY registry.heroku.com
         heroku container:push web -a $APP_NAME
