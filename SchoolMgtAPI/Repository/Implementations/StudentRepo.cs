@@ -112,9 +112,9 @@ namespace Repository.Implementations
             if(students != null) { return await students.ToListAsync(); }
             return null;
         }
-        public async Task<IEnumerable<string>> GetRegisteredCoursesAsync(string studentId)
+        public async Task<IEnumerable<Course>> GetRegisteredCoursesAsync(string studentId)
         {
-           var student = await GetStudentAsync(studentId);
+           var student = await GetStudentAsync(null, studentId);
            var courses = student.Courses.ToList();
 
             if(courses != null) { return courses; }

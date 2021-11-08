@@ -17,7 +17,7 @@ namespace Repository.Interfaces
     Task<IEnumerable<Student>> GetAllStudentsInDepartmentAsync(string department);
     Task<IEnumerable<Student>> GetAllStudentsInFacultyAsync(string faculty);
     Task<IEnumerable<Student>> GetAllStudentsAsync();
-    Task<IEnumerable<string>> GetRegisteredCoursesAsync(string studentId);
+    Task<IEnumerable<Course>> GetRegisteredCoursesAsync(string studentId);
     }
 }
 
