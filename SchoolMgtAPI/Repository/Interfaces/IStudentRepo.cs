@@ -10,14 +10,14 @@ namespace Repository.Interfaces
 {
     public interface IStudentRepo : IGenericRepository<Student>
     {
-    Task<Student> GetStudent(string registrationNumber = null, string studentId = null);
-    Task<IEnumerable<Student>> GetAllStudentsInALevel(int studentsLevel);
-    Task<IEnumerable<Student>> GetAllStudentsInADepartmentInALevel(int studentsLevel, string department);
-    Task<IEnumerable<Student>> GetAllStudentsInAFacultyInALevel(int studentsLevel, string faculty);
-    Task<IEnumerable<Student>> GetAllStudentsInDepartment(string department);
-    Task<IEnumerable<Student>> GetAllStudentsInFaculty(string faculty);
-    Task<IEnumerable<Student>> GetAllStudents();
-    Task<IEnumerable<string>> GetRegisteredCourses(string studentId);
+    Task<Student> GetStudentAsync(string registrationNumber = null, string studentId = null);
+    Task<IEnumerable<Student>> GetAllStudentsInALevelAsync(int studentsLevel);
+    Task<IEnumerable<Student>> GetAllStudentsInADepartmentInALevelAsync(int studentsLevel, string department);
+    Task<IEnumerable<Student>> GetAllStudentsInAFacultyInALevelAsync(int studentsLevel, string faculty);
+    Task<IEnumerable<Student>> GetAllStudentsInDepartmentAsync(string department);
+    Task<IEnumerable<Student>> GetAllStudentsInFacultyAsync(string faculty);
+    Task<IEnumerable<Student>> GetAllStudentsAsync();
+    Task<IEnumerable<string>> GetRegisteredCoursesAsync(string studentId);
     }
 }
 
