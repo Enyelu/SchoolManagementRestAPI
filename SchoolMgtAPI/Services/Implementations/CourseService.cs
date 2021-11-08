@@ -79,7 +79,7 @@ namespace Services.Implementations
             {
                 var mappingResponse = _mapper.Map<StudentModel>(response);
                 var singleStudent = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(mappingResponse);
-                return Response<IEnumerable < ReadStudentResponseDto >>.Success(studentsList, "Success");
+                return Response<IEnumerable <ReadStudentResponseDto >>.Success(studentsList, "Success");
             }
             return Response<IEnumerable<ReadStudentResponseDto>>.Fail($"No student offer {courseCode}"); ;
         }
