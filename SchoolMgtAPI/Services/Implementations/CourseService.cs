@@ -70,7 +70,7 @@ namespace Services.Implementations
             return Response<string>.Fail($"{course.Name} does not exist");
         }
 
-        public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadCourseStudents(string courseCode = null, string courseId = null)
+        public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadCourseStudentsAsync(string courseCode = null, string courseId = null)
         {
             var studentsList = new List<ReadStudentResponseDto>();
             var response = await _unitOfWork.Course.CourseStudents(courseCode, courseId);
@@ -84,7 +84,7 @@ namespace Services.Implementations
             return Response<IEnumerable<ReadStudentResponseDto>>.Fail($"No student offer {courseCode}"); ;
         }
 
-        public async Task<Response<IEnumerable<CourseLecturerResponseDto>>> ReadCourseLecturers(string courseCode = null, string courseId = null)
+        public async Task<Response<IEnumerable<CourseLecturerResponseDto>>> ReadCourseLecturersAsync(string courseCode = null, string courseId = null)
         {
             var LecturerList = new List<CourseLecturerResponseDto>();
             var response = await _unitOfWork.Course.CourseLecturers(courseCode, courseId);

@@ -9,6 +9,7 @@ namespace Utilities.Dtos
     public class NonAcademicStaffResponseDto
     {
         public string FullName { get; set; }
+        public string Department { get; set; }
         public string Email { get; set; }   
         public string Position  { get; set; }
         public string Avatar { get; set; }

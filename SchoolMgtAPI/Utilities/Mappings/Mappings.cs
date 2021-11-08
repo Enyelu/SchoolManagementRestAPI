@@ -66,7 +66,8 @@ namespace Utilities.Mappings
                 .ForMember(x => x.City, y => y.MapFrom(z => z.AppUser.Addresses.City))
                 .ForMember(x => x.State, y => y.MapFrom(z => z.AppUser.Addresses.State))
                 .ForMember(x => x.Country, y => y.MapFrom(z => z.AppUser.Addresses.Country))
-                .ForMember(x => x.Email, y => y.MapFrom(z => z.AppUser.Email));
+                .ForMember(x => x.Email, y => y.MapFrom(z => z.AppUser.Email))
+                .ForMember(x => x.Department, y => y.MapFrom(z => z.Department.Name));
 
             //mapping for lecturer response
             CreateMap<AppUser, LecturerResponseDto>()
@@ -85,6 +86,39 @@ namespace Utilities.Mappings
                 .ForMember(x => x.Country, y => y.MapFrom(z => z.Addresses.Country))
                 .ForMember(x => x.Department, y => y.MapFrom(z => z.Lecturer.Department.Name))
                 .ForMember(x => x.Courses, y => y.MapFrom(z => z.Lecturer.Courses));
+
+            //mapping for getting details of departments in a faculty
+            CreateMap<Faculty, FacultyDepartmentsResponseDto>()
+                .ForMember(x => x.Name, y => y.MapFrom(z => z.Name))
+                .ForMember(x => x.Date, y => y.MapFrom(z => z.Date))
+                .ForMember(x => x.IsActive, y => y.MapFrom(z => z.IsActive))
+                .ForMember(x => x.NoOfLecturer, y => y.MapFrom(z => z.Lecturer.Count()))
+                .ForMember(x => x.NoOfNonAcademicStaff, y => y.MapFrom(z => z.NonAcademicStaff.Count()))
+                .ForMember(x => x.NoOfCourses, y => y.MapFrom(z => z.Courses.Count()));
+
+            CreateMap<Lecturer, FacultyLecturerResponseDto>()
+                .ForMember(x => x.FirstName, y => y.MapFrom(z => z.AppUser.FirstName))
+                .ForMember(x => x.MiddleName, y => y.MapFrom(z => z.AppUser.MiddleName))
+                .ForMember(x => x.LastName, y => y.MapFrom(z => z.AppUser.LastName))
+                .ForMember(x => x.Avatar, y => y.MapFrom(z => z.AppUser.Avatar))
+                .ForMember(x => x.IsActive, y => y.MapFrom(z => z.AppUser.IsActive))
+                .ForMember(x => x.Department, y => y.MapFrom(z => z.Department.Name))
+                .ForMember(x => x.BirthDate, y => y.MapFrom(z => z.AppUser.BirthDate))
+                .ForMember(x => x.DateCreated, y => y.MapFrom(z => z.AppUser.DateCreated))
+                .ForMember(x => x.DateModified, y => y.MapFrom(z => z.AppUser.DateModified))
+                .ForMember(x => x, y => y.MapFrom(z => z));
+
+            CreateMap<NonAcademicStaff, FacultyLecturerResponseDto>()
+               .ForMember(x => x.FirstName, y => y.MapFrom(z => z.AppUser.FirstName))
+               .ForMember(x => x.MiddleName, y => y.MapFrom(z => z.AppUser.MiddleName))
+               .ForMember(x => x.LastName, y => y.MapFrom(z => z.AppUser.LastName))
+               .ForMember(x => x.Avatar, y => y.MapFrom(z => z.AppUser.Avatar))
+               .ForMember(x => x.IsActive, y => y.MapFrom(z => z.AppUser.IsActive))
+               .ForMember(x => x.Department, y => y.MapFrom(z => z.Department.Name))
+               .ForMember(x => x.BirthDate, y => y.MapFrom(z => z.AppUser.BirthDate))
+               .ForMember(x => x.DateCreated, y => y.MapFrom(z => z.AppUser.DateCreated))
+               .ForMember(x => x.DateModified, y => y.MapFrom(z => z.AppUser.DateModified))
+               .ForMember(x => x, y => y.MapFrom(z => z));
         }
     }
 }
