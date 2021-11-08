@@ -14,6 +14,6 @@ namespace Models
         public ClassAdviser ClassAdviser { get; set; }
         public Department Department { get; set; }
         public Faculty Faculty { get; set; }
-        public ICollection<string> Courses { get; set; }    
+        public ICollection<Course> Courses { get; set; }    
     }
 }
