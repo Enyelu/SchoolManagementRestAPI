@@ -17,6 +17,7 @@ namespace Data
         public DbSet<NonAcademicStaff> NonAcademicStaff { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Faculty> Faculties { get; set; }
+        public DbSet<PaymentRecord> PaymentRecords { get; set; }  
         public SchoolDbContext(DbContextOptions<SchoolDbContext> options) : base(options){}
     }
 }
