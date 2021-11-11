@@ -9,10 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SchoolMgtAPI.ExtensionMethods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities.Mappings;
 
 namespace SchoolMgtAPI
 {
@@ -28,9 +30,10 @@ namespace SchoolMgtAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddAutoMapper(typeof(Mappings));
+            services.ConfigureIdentity();
+            services.InjectServices(Configuration);
             services.AddControllers();
-            services.AddDbContext<SchoolDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("default")));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SchoolMgtAPI", Version = "v1" });

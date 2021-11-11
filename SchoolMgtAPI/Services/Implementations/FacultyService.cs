@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Models;
+using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using Utilities.GeneralResponse;
 
 namespace Services.Implementations
 {
-    public class FacultyService
+    public class FacultyService : IFacultyService
     {
         private IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
