@@ -8,9 +8,9 @@ using Models;
 
 namespace Services.Interfaces
 {
-    public interface IAppUserService
+    public interface IPasswordService
     {
-        Task<Response<string>> ConfirmEmailAsync(string userId, string token);
+        Task<Response<string>> ConfirmEmailAsync(string email, string token);
         Task<Response<string>> ForgotPasswordAsync(string email);
         Task<Response<string>> ResetPasswordAsync(ResetPasswordModel resetPasswordModel);
     }

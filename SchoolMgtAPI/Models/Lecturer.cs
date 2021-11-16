@@ -7,8 +7,9 @@ namespace Models
     {
         [Key]
         public string AppUserId { get; set; }
+        public AppUser AppUser { get; set; }
         public Department Department { get; set; }
-        public AppUser AppUser { get; set; }    
+        public Faculty Faculty { get; set; }
         public ICollection<Course> Courses { get; set; }   
     }
 }

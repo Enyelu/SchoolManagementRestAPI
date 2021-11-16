@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
 using Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utilities.Dtos;
 
 namespace Utilities.Mappings
@@ -27,11 +23,11 @@ namespace Utilities.Mappings
                 .ForMember(x => x.Id, y => y.MapFrom(z => z.ClassAdviser.Lecturer.AppUserId))
                 .ForMember(x => x.Department, y => y.MapFrom(z => z.Department.Name))
                 .ForMember(x => x.Faculty, y => y.MapFrom(z => z.Faculty.Name))
-                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Addresses.StreetNumber))
-                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Addresses.StreetNumber))
-                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Addresses.StreetNumber))
-                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Addresses.StreetNumber))
-                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Addresses.StreetNumber));
+                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Address.StreetNumber))
+                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Address.StreetNumber))
+                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Address.StreetNumber))
+                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Address.StreetNumber))
+                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Address.StreetNumber));
 
             //mapping for course registration
             CreateMap<CourseDto, Course>()
@@ -57,15 +53,15 @@ namespace Utilities.Mappings
             //mapping to read non-academic staff response
             CreateMap<NonAcademicStaff, NonAcademicStaffResponseDto>()
                 .ForMember(x => x.FullName, y => y.MapFrom(z => z.AppUser.FirstName + " " + z.AppUser.MiddleName + " " + z.AppUser.LastName))
-                .ForMember(x => x.Position, y => y.MapFrom(z => z.DutyPost.Name))
+                .ForMember(x => x.Position, y => y.MapFrom(z => z.Position.Name))
                 .ForMember(x => x.Avatar, y => y.MapFrom(z => z.AppUser.Avatar))
                 .ForMember(x => x.IsActive, y => y.MapFrom(z => z.AppUser.IsActive))
                 .ForMember(x => x.BirthDate, y => y.MapFrom(z => z.AppUser.BirthDate))
                 .ForMember(x => x.DateCreated, y => y.MapFrom(z => z.AppUser.DateCreated))
-                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Addresses.StreetNumber))
-                .ForMember(x => x.City, y => y.MapFrom(z => z.AppUser.Addresses.City))
-                .ForMember(x => x.State, y => y.MapFrom(z => z.AppUser.Addresses.State))
-                .ForMember(x => x.Country, y => y.MapFrom(z => z.AppUser.Addresses.Country))
+                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Address.StreetNumber))
+                .ForMember(x => x.City, y => y.MapFrom(z => z.AppUser.Address.City))
+                .ForMember(x => x.State, y => y.MapFrom(z => z.AppUser.Address.State))
+                .ForMember(x => x.Country, y => y.MapFrom(z => z.AppUser.Address.Country))
                 .ForMember(x => x.Email, y => y.MapFrom(z => z.AppUser.Email))
                 .ForMember(x => x.Department, y => y.MapFrom(z => z.Department.Name));
 
@@ -80,10 +76,10 @@ namespace Utilities.Mappings
                 .ForMember(x => x.BirthDate, y => y.MapFrom(z => z.BirthDate))
                 .ForMember(x => x.DateCreated, y => y.MapFrom(z => z.DateCreated))
                 .ForMember(x => x.DateModified, y => y.MapFrom(z => z.DateModified))
-                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.Addresses.StreetNumber))
-                .ForMember(x => x.City, y => y.MapFrom(z => z.Addresses.City))
-                .ForMember(x => x.State, y => y.MapFrom(z => z.Addresses.State))
-                .ForMember(x => x.Country, y => y.MapFrom(z => z.Addresses.Country))
+                .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.Address.StreetNumber))
+                .ForMember(x => x.City, y => y.MapFrom(z => z.Address.City))
+                .ForMember(x => x.State, y => y.MapFrom(z => z.Address.State))
+                .ForMember(x => x.Country, y => y.MapFrom(z => z.Address.Country))
                 .ForMember(x => x.Department, y => y.MapFrom(z => z.Lecturer.Department.Name))
                 .ForMember(x => x.Courses, y => y.MapFrom(z => z.Lecturer.Courses));
 
@@ -117,6 +113,18 @@ namespace Utilities.Mappings
                .ForMember(x => x.BirthDate, y => y.MapFrom(z => z.AppUser.BirthDate))
                .ForMember(x => x.DateCreated, y => y.MapFrom(z => z.AppUser.DateCreated))
                .ForMember(x => x.DateModified, y => y.MapFrom(z => z.AppUser.DateModified));
+
+            //Student register mapping
+            CreateMap<RegisterStudentDto, AppUser>();
+
+            //Lecturer register mapping
+            CreateMap<RegisterLecturerDto, AppUser>();
+
+            //Non-Academic staff register mapping
+            CreateMap<RegisterNonAcademicStaffDto, AppUser>();
+
+            //Update address mapping
+            CreateMap<UpdateAddressDto,Address>();
         }
     }
 }
