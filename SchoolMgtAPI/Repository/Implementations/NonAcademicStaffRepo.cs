@@ -20,7 +20,7 @@ namespace Repository.Implementations
         {
             var staff = await _context.NonAcademicStaff
                     .Include(x => x.AppUser)
-                    .Include(x => x.DutyPost).FirstOrDefaultAsync(x => x.AppUserId == staffId);
+                    .Include(x => x.Position).FirstOrDefaultAsync(x => x.AppUserId == staffId);
             return staff;
         }
 
@@ -28,7 +28,7 @@ namespace Repository.Implementations
         {
             var staff = await _context.NonAcademicStaff
                                       .Include(x => x.AppUser)
-                                      .Include(x => x.DutyPost).Where(x => x.AppUser.IsActive == true).ToListAsync();
+                                      .Include(x => x.Position).Where(x => x.AppUser.IsActive == true).ToListAsync();
             return staff;
         }
 

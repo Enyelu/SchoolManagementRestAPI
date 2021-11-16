@@ -12,7 +12,7 @@ namespace Data
         public DbSet<ClassAdviser> ClassAdvisersers { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Department> Departments { get; set; }
-        public DbSet<NonAcademicStaffPosition> NonAcademicStaffDutyPost { get; set; }
+        public DbSet<NonAcademicStaffPosition> NonAcademicStaffPositions { get; set; }
         public DbSet<Lecturer> Lecturers { get; set; }
         public DbSet<NonAcademicStaff> NonAcademicStaff { get; set; }
         public DbSet<Student> Students { get; set; }
