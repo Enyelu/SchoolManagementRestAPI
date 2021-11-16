@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Repository.Interfaces
 {
-    public interface ILecturerRepo :IGenericRepository<Lecturer>
+    public  interface IAddressRepo : IGenericRepository<Address>
     {
-        Task<Lecturer> GetLecturerDetailAsync(string lecturerEmail);
+        Task<Address> GetAddressAsync(string addressId);
     }
 }

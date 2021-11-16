@@ -2,30 +2,29 @@
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Models;
+using Models.Mail;
 using Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utilities.GeneralResponse;
 
 namespace Services.Implementations
 {
-    public class AppUserService : IAppUserService
+    public class PasswordService : IPasswordService
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration; 
         private readonly IMailService _mailService;
-        public AppUserService(UserManager<AppUser> userManager, IConfiguration configuration, IMailService mailService)
+        public PasswordService(UserManager<AppUser> userManager, IConfiguration configuration, IMailService mailService)
         {
             _userManager = userManager;
             _configuration = configuration;
             _mailService = mailService;
         }
-        public async Task<Response<string>> ConfirmEmailAsync(string userId, string token)
+
+        public async Task<Response<string>> ConfirmEmailAsync(string email, string token)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
                 var emailTokenDecoded = WebEncoders.Base64UrlDecode(token);
@@ -40,7 +39,6 @@ namespace Services.Implementations
             }
             return Response<string>.Fail("User not found");
         }
-
         public async Task<Response<string>> ForgotPasswordAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -50,8 +48,16 @@ namespace Services.Implementations
                 var encodedRestPasswordToken = Encoding.UTF8.GetBytes(resetPasswordToken);
                 var validResetPasswordToken = WebEncoders.Base64UrlEncode(encodedRestPasswordToken);
 
-                string url = $"{_configuration.GetSection("applicationURL").Value}/ResetPassword?email={email}&token={validResetPasswordToken}";
-                var sendMail = await _mailService.SendMailAsync(email, "<h1>Reset Password</h1>", $"<p> Dear {user.FirstName}, to reset your password, <a href='{url}'>click here</a></p>");
+                string url = $"{_configuration["appURL"]}/api/ResetPassword?email={email}&token={validResetPasswordToken}";
+                
+                var mail = new EmailRequest()
+                {
+                    ToEmail = email,
+                    Subject = "<h1>Reset Password</h1>",
+                    Body = $"<p> Dear {user.FirstName}, to reset your password, <a href='{url}'>click here</a></p>",
+                };
+
+                var sendMail = await _mailService.SendMailAsync(mail);
 
                 return Response<string>.Success(null, $"Visit {email} to confirm your password reset");
             }

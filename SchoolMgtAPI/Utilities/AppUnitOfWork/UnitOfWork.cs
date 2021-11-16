@@ -14,8 +14,11 @@ namespace Utilities.AppUnitOfWork
         private IDepartmentRepo _department;
         private INonAcademicStaffRepo _nonAcademicStaff;
         private IFacultyRepo _faculty;
-        IStudentRepo _student;
-        ILecturerRepo _lecturer;
+        private IAddressRepo _address;
+        private IStudentRepo _student;
+        private ILecturerRepo _lecturer;
+        private INonAcademicStaffPositionRepo _nonAcademicStaffPositionRepo;
+
 
         private readonly SchoolDbContext _context;
 
@@ -32,6 +35,10 @@ namespace Utilities.AppUnitOfWork
         public IStudentRepo Student => _student ??= new StudentRepo(_context);
         public ILecturerRepo Lecturer => _lecturer ??= new LecturerRepo(_context);
         public IFacultyRepo Faculty => _faculty ??= new FacultyRepo(_context);
+        public IAddressRepo Address => _address ??= new AddressRepo(_context);
+        public INonAcademicStaffPositionRepo NonAcademicStaffPosition => _nonAcademicStaffPositionRepo ??= new NonAcademicStaffPositionRepo(_context);
+
+
 
         public async Task SaveChangesAsync()
         {

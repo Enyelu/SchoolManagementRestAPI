@@ -9,5 +9,6 @@ namespace Services.Implementations
 {
     public class ClassAdviserService : IClassAdviserService
     {
+        //Adds student
     }
 }

@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Models;
+using Models.Mail;
 using Services.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using Utilities.AppUnitOfWork;
 using Utilities.Dtos;
 using Utilities.GeneralResponse;
@@ -17,12 +19,76 @@ namespace Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IConfiguration _configuration;
+        private readonly IMailService _mailService;
         private readonly IMapper _mapper;
-        public LecturerService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IMapper mapper)
+        public LecturerService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IMapper mapper, IConfiguration configuration, IMailService mailService)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _configuration = configuration;
+            _mailService = mailService;
             _mapper = mapper;
+        }
+
+        public async Task<Response<string>> RegisterLecturer(RegisterLecturerDto lecturerDto)
+        {
+            var appUser = _mapper.Map<AppUser>(lecturerDto);
+            var address = _mapper.Map<Address>(lecturerDto);
+
+            address.Id = Guid.NewGuid().ToString();
+            await _unitOfWork.Address.AddAsync(address);
+            await _unitOfWork.SaveChangesAsync();
+            var readAddress = await _unitOfWork.Address.GetAddressAsync(address.Id);
+
+            appUser.IsActive = true;
+            appUser.DateCreated = DateTime.UtcNow.ToString();
+            appUser.DateModified = appUser.DateCreated.ToString();
+            appUser.Address = readAddress;
+
+            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                var response = await _userManager.CreateAsync(appUser, lecturerDto.Password);
+
+                if (response.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(appUser, Roles.Lecturer);
+                    var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
+                    var encodedEmailToken = Encoding.UTF8.GetBytes(emailToken);
+                    var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+
+                    var callbackUrl = $"{_configuration["appURL"]}/api/Student/ConfirmStudentPassword?email={appUser.Email}&token={validEmailToken}";
+
+                    var mail = new EmailRequest()
+                    {
+                        ToEmail = appUser.Email,
+                        Subject = "Email Confirmation",
+                        Attechments = null,
+                        Body = $"<p> Dear {appUser.FirstName} \n Confirmation of your email is one click away <a href='{callbackUrl}'>click here</a> to continue</P>"
+                    };
+
+                    var result = await _mailService.SendMailAsync(mail);
+
+                    if (result)
+                    {
+                        var department = await _unitOfWork.Department.GetDepartmentAsync(lecturerDto.DepartmentName);
+                        var faculty = await _unitOfWork.Faculty.GetFacultyAsync(lecturerDto.FacultyName);
+
+                        var newLecturer = new Lecturer()
+                        {
+                            AppUser = appUser,
+                            Department = department,
+                            Faculty = faculty,
+                        };
+                        await _unitOfWork.Lecturer.AddAsync(newLecturer);
+                        await _unitOfWork.SaveChangesAsync();
+                        transaction.Complete();
+                        return Response<string>.Success(null, "Registration was successful");
+                    }
+                    return Response<string>.Fail("Email confirmation message not successful");
+                }
+                return Response<string>.Fail("Registration not successful. Retry...");
+            }
         }
 
         public async Task<Response<LecturerResponseDto>> ReadLecturerDetailAsync(string lecturerEmail)
@@ -62,10 +128,11 @@ namespace Services.Implementations
             lecturer.FirstName =  lecturerDto.FirstName;
             lecturer.MiddleName = lecturerDto.MiddleName;
             lecturer.LastName = lecturerDto.LastName;
-            lecturer.Addresses.StreetNumber = lecturerDto.StreetNumber;
-            lecturer.Addresses.City = lecturerDto.City;
-            lecturer.Addresses.State = lecturerDto.State;   
-            lecturer.Addresses.Country = lecturerDto.Country;
+            lecturer.PhoneNumber = lecturerDto.PhoneNumber;
+            lecturer.Address.StreetNumber = lecturerDto.StreetNumber;
+            lecturer.Address.City = lecturerDto.City;
+            lecturer.Address.State = lecturerDto.State;   
+            lecturer.Address.Country = lecturerDto.Country;
 
             var result =  await _userManager.UpdateAsync(lecturer);
 

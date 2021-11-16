@@ -14,6 +14,8 @@ namespace Utilities.AppUnitOfWork
         IStudentRepo Student { get; }
         ILecturerRepo Lecturer { get; }
         IFacultyRepo Faculty { get; }
+        IAddressRepo Address { get; }
+        INonAcademicStaffPositionRepo NonAcademicStaffPosition { get; }
         Task SaveChangesAsync();
     }
 }

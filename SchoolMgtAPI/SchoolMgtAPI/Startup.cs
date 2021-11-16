@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Models.Mail;
 using SchoolMgtAPI.ExtensionMethods;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,7 @@ namespace SchoolMgtAPI
             services.AddAutoMapper(typeof(Mappings));
             services.ConfigureIdentity();
             services.InjectServices(Configuration);
+            services.ConfigureEmailService(Configuration);
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
