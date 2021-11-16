@@ -61,6 +61,7 @@ namespace SchoolMgtAPI.Controllers
                     StudentEmail = user.Email,
                     StudentDepartment = user.Student.Department.Name,
                     StudentLevel = user.Student.Level,
+                    Avatar = user.Avatar,
                     PaymentType = paymentModel.PaymentType,
                     Amount = request.AmountInKobo,
                     TransactionReference = request.Reference,

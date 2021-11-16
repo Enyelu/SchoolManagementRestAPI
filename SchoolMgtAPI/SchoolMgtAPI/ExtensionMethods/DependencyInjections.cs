@@ -13,8 +13,7 @@ namespace SchoolMgtAPI.ExtensionMethods
         public static void  InjectServices(this IServiceCollection services, IConfiguration Configuration)
         {
             services.AddDbContext<SchoolDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("default")));
-            services.AddTransient<IMailService,MailService>();
-            services.AddTransient<IAppUserService, AppUserService>();
+            services.AddTransient<IPasswordService, PasswordService>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IAdminService,AdminService>();
             services.AddTransient<IClassAdviserService,ClassAdviserService>();
@@ -24,6 +23,7 @@ namespace SchoolMgtAPI.ExtensionMethods
             services.AddTransient<ILecturerService, LecturerService>();
             services.AddTransient<INonAcademicStaffService, NonAcademicStaffService>();
             services.AddTransient<IStudentService, StudentService>();
+            services.AddTransient<IAddressService, AddressService>();
         }
     }
 }

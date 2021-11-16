@@ -9,7 +9,7 @@ namespace Models
         [Key]
         public string Id { get; set; }
         public string Name { get; set; }
-        public string Date { get; set; }
+        public string DateCreated { get; set; }
         public bool IsActive { get; set; } 
         public Faculty Faculty { get; set; }
         public ICollection<Lecturer> Lecturer {  get; set; } 
