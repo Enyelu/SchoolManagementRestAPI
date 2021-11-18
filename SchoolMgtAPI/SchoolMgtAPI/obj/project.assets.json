@@ -1634,6 +1634,19 @@
           "bin/placeholder/Repository.dll": {}
         }
       },
+      "Seeder/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v5.0",
+        "dependencies": {
+          "Data": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Seeder.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Seeder.dll": {}
+        }
+      },
       "Services/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v5.0",
@@ -5589,6 +5602,11 @@
       "path": "../Repository/Repository.csproj",
       "msbuildProject": "../Repository/Repository.csproj"
     },
+    "Seeder/1.0.0": {
+      "type": "project",
+      "path": "../Seeder/Seeder.csproj",
+      "msbuildProject": "../Seeder/Seeder.csproj"
+    },
     "Services/1.0.0": {
       "type": "project",
       "path": "../Services/Services.csproj",
@@ -5609,6 +5627,7 @@
       "Microsoft.VisualStudio.Azure.Containers.Tools.Targets >= 1.14.0",
       "Npgsql.EntityFrameworkCore.PostgreSQL >= 5.0.10",
       "PayStack.Net >= 0.7.7",
+      "Seeder >= 1.0.0",
       "Services >= 1.0.0",
       "Swashbuckle.AspNetCore >= 5.6.3"
     ]
@@ -5642,6 +5661,9 @@
           "projectReferences": {
             "C:\\Users\\hp\\Documents\\PersonalProjects\\SchoolMgtAPI\\Data\\Data.csproj": {
               "projectPath": "C:\\Users\\hp\\Documents\\PersonalProjects\\SchoolMgtAPI\\Data\\Data.csproj"
+            },
+            "C:\\Users\\hp\\Documents\\PersonalProjects\\SchoolMgtAPI\\Seeder\\Seeder.csproj": {
+              "projectPath": "C:\\Users\\hp\\Documents\\PersonalProjects\\SchoolMgtAPI\\Seeder\\Seeder.csproj"
             },
             "C:\\Users\\hp\\Documents\\PersonalProjects\\SchoolMgtAPI\\Services\\Services.csproj": {
               "projectPath": "C:\\Users\\hp\\Documents\\PersonalProjects\\SchoolMgtAPI\\Services\\Services.csproj"
