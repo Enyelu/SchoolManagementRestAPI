@@ -52,7 +52,7 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "NonAcademicStaffDutyPost",
+                name: "NonAcademicStaffPositions",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
@@ -61,7 +61,31 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NonAcademicStaffDutyPost", x => x.Id);
+                    table.PrimaryKey("PK_NonAcademicStaffPositions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentRecords",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    StudentId = table.Column<string>(type: "text", nullable: true),
+                    StudentRegistrationNumber = table.Column<string>(type: "text", nullable: true),
+                    StudentFirstName = table.Column<string>(type: "text", nullable: true),
+                    StudentLastName = table.Column<string>(type: "text", nullable: true),
+                    Avatar = table.Column<string>(type: "text", nullable: true),
+                    StudentEmail = table.Column<string>(type: "text", nullable: true),
+                    StudentDepartment = table.Column<string>(type: "text", nullable: true),
+                    StudentLevel = table.Column<int>(type: "integer", nullable: false),
+                    PaymentType = table.Column<string>(type: "text", nullable: true),
+                    Amount = table.Column<int>(type: "integer", nullable: false),
+                    TransactionReference = table.Column<string>(type: "text", nullable: true),
+                    IsApproved = table.Column<bool>(type: "boolean", nullable: false),
+                    DateCreated = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentRecords", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,12 +96,14 @@ namespace Data.Migrations
                     FirstName = table.Column<string>(type: "text", nullable: true),
                     MiddleName = table.Column<string>(type: "text", nullable: true),
                     LastName = table.Column<string>(type: "text", nullable: true),
+                    Age = table.Column<int>(type: "integer", nullable: false),
+                    Gender = table.Column<string>(type: "text", nullable: true),
                     Avatar = table.Column<string>(type: "text", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     BirthDate = table.Column<string>(type: "text", nullable: true),
                     DateCreated = table.Column<string>(type: "text", nullable: true),
                     DateModified = table.Column<string>(type: "text", nullable: true),
-                    AddressesId = table.Column<string>(type: "text", nullable: true),
+                    AddressId = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -97,8 +123,8 @@ namespace Data.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Addresses_AddressesId",
-                        column: x => x.AddressesId,
+                        name: "FK_AspNetUsers_Addresses_AddressId",
+                        column: x => x.AddressId,
                         principalTable: "Addresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -131,7 +157,7 @@ namespace Data.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
-                    Date = table.Column<string>(type: "text", nullable: true),
+                    DateCreated = table.Column<string>(type: "text", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     FacultyId = table.Column<string>(type: "text", nullable: true)
                 },
@@ -297,8 +323,8 @@ namespace Data.Migrations
                 {
                     AppUserId = table.Column<string>(type: "text", nullable: false),
                     DepartmentId = table.Column<string>(type: "text", nullable: true),
-                    DutyPostId = table.Column<string>(type: "text", nullable: true),
-                    FacultyId = table.Column<string>(type: "text", nullable: true)
+                    FacultyId = table.Column<string>(type: "text", nullable: true),
+                    PositionId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -322,9 +348,9 @@ namespace Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_NonAcademicStaff_NonAcademicStaffDutyPost_DutyPostId",
-                        column: x => x.DutyPostId,
-                        principalTable: "NonAcademicStaffDutyPost",
+                        name: "FK_NonAcademicStaff_NonAcademicStaffPositions_PositionId",
+                        column: x => x.PositionId,
+                        principalTable: "NonAcademicStaffPositions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -471,9 +497,9 @@ namespace Data.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_AddressesId",
+                name: "IX_AspNetUsers_AddressId",
                 table: "AspNetUsers",
-                column: "AddressesId");
+                column: "AddressId");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -527,14 +553,14 @@ namespace Data.Migrations
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NonAcademicStaff_DutyPostId",
-                table: "NonAcademicStaff",
-                column: "DutyPostId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_NonAcademicStaff_FacultyId",
                 table: "NonAcademicStaff",
                 column: "FacultyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NonAcademicStaff_PositionId",
+                table: "NonAcademicStaff",
+                column: "PositionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Students_ClassAdviserId",
@@ -579,6 +605,9 @@ namespace Data.Migrations
                 name: "NonAcademicStaff");
 
             migrationBuilder.DropTable(
+                name: "PaymentRecords");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -588,7 +617,7 @@ namespace Data.Migrations
                 name: "Students");
 
             migrationBuilder.DropTable(
-                name: "NonAcademicStaffDutyPost");
+                name: "NonAcademicStaffPositions");
 
             migrationBuilder.DropTable(
                 name: "ClassAdvisersers");
