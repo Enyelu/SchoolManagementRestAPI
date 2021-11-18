@@ -209,8 +209,11 @@ namespace Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<string>("AddressesId")
+                    b.Property<string>("AddressId")
                         .HasColumnType("text");
+
+                    b.Property<int>("Age")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Avatar")
                         .HasColumnType("text");
@@ -236,6 +239,9 @@ namespace Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Gender")
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
@@ -282,7 +288,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressesId");
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -420,19 +426,19 @@ namespace Data.Migrations
                     b.Property<string>("DepartmentId")
                         .HasColumnType("text");
 
-                    b.Property<string>("DutyPostId")
+                    b.Property<string>("FacultyId")
                         .HasColumnType("text");
 
-                    b.Property<string>("FacultyId")
+                    b.Property<string>("PositionId")
                         .HasColumnType("text");
 
                     b.HasKey("AppUserId");
 
                     b.HasIndex("DepartmentId");
 
-                    b.HasIndex("DutyPostId");
-
                     b.HasIndex("FacultyId");
+
+                    b.HasIndex("PositionId");
 
                     b.ToTable("NonAcademicStaff");
                 });
@@ -450,7 +456,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NonAcademicStaffDutyPost");
+                    b.ToTable("NonAcademicStaffPositions");
                 });
 
             modelBuilder.Entity("Models.PaymentRecord", b =>
@@ -619,11 +625,11 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Models.AppUser", b =>
                 {
-                    b.HasOne("Models.Address", "Addresses")
+                    b.HasOne("Models.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("AddressesId");
+                        .HasForeignKey("AddressId");
 
-                    b.Navigation("Addresses");
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("Models.ClassAdviser", b =>
@@ -669,13 +675,15 @@ namespace Data.Migrations
                         .WithMany("Lecturer")
                         .HasForeignKey("DepartmentId");
 
-                    b.HasOne("Models.Faculty", null)
+                    b.HasOne("Models.Faculty", "Faculty")
                         .WithMany("Lecturer")
                         .HasForeignKey("FacultyId");
 
                     b.Navigation("AppUser");
 
                     b.Navigation("Department");
+
+                    b.Navigation("Faculty");
                 });
 
             modelBuilder.Entity("Models.NonAcademicStaff", b =>
@@ -690,19 +698,21 @@ namespace Data.Migrations
                         .WithMany("NonAcademicStaff")
                         .HasForeignKey("DepartmentId");
 
-                    b.HasOne("Models.NonAcademicStaffPosition", "DutyPost")
-                        .WithMany("NonAcademicStaff")
-                        .HasForeignKey("DutyPostId");
-
-                    b.HasOne("Models.Faculty", null)
+                    b.HasOne("Models.Faculty", "Faculty")
                         .WithMany("NonAcademicStaff")
                         .HasForeignKey("FacultyId");
+
+                    b.HasOne("Models.NonAcademicStaffPosition", "Position")
+                        .WithMany("NonAcademicStaff")
+                        .HasForeignKey("PositionId");
 
                     b.Navigation("AppUser");
 
                     b.Navigation("Department");
 
-                    b.Navigation("DutyPost");
+                    b.Navigation("Faculty");
+
+                    b.Navigation("Position");
                 });
 
             modelBuilder.Entity("Models.Student", b =>
