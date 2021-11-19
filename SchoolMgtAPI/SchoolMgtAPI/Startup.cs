@@ -49,7 +49,7 @@ namespace SchoolMgtAPI
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SchoolMgtAPI v1"));
 
-            DataSeeder.SeedData(dbContext, userManager, roleManager).Wait();
+            //DataSeeder.SeedData(dbContext, userManager, roleManager).Wait();
 
             app.UseHttpsRedirection();
 
