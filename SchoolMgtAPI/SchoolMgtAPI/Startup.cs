@@ -15,18 +15,21 @@ namespace SchoolMgtAPI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Env = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Env { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Mappings));
             services.ConfigureIdentity();
+            services.AddDbContextAndConfigurations(Env, Configuration);
             services.InjectServices(Configuration);
             services.ConfigureEmailService(Configuration);
             services.AddControllers();
@@ -34,7 +37,12 @@ namespace SchoolMgtAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SchoolMgtAPI", Version = "v1" });
             });
-            
+
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

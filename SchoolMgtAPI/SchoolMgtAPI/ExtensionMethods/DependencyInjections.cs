@@ -11,9 +11,7 @@ namespace SchoolMgtAPI.ExtensionMethods
     public static class DependencyInjections
     {
         public static void  InjectServices(this IServiceCollection services, IConfiguration Configuration)
-        {
-            services.AddDbContextPool<SchoolDbContext>(options => options.UseNpgsql(Configuration["ConnectionStrings:default"]));
-            
+        {   
             services.AddTransient<IPasswordService, PasswordService>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IAdminService,AdminService>();
