@@ -17,3 +17,4 @@ namespace Models
         public ICollection<Course> Courses { get; set; }
     }
 }
+ 

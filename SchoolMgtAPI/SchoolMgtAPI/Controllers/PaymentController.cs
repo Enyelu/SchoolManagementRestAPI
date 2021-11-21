@@ -29,7 +29,7 @@ namespace SchoolMgtAPI.Controllers
             _context = context;
             token = _configuration["Paystack:PaystackSK"];
             PayStack = new PayStackApi(token);
-            _userManager = userManager; 
+            _userManager = userManager;
         }
 
         [HttpPost("Payment")]
@@ -43,7 +43,7 @@ namespace SchoolMgtAPI.Controllers
                 AmountInKobo = paymentModel.Amount * 100,
                 Currency = "NGN",
                 Email = paymentModel.Email,
-                CallbackUrl = "http://localhost:13090/api/Payment/verify/",
+                CallbackUrl = $"{_configuration["AppUrl"]}/api/Payment/verify/",
                 Reference = PaymentToken.GenerateToken()
             };
 
@@ -79,7 +79,7 @@ namespace SchoolMgtAPI.Controllers
         {
             var response = PayStack.Transactions.Verify(reference);
 
-            if(response.Data.Status.ToLower().Trim() == "success")
+            if (response.Data.Status.ToLower().Trim() == "success")
             {
                 var PaymentRecord = await _context.PaymentRecords.FirstOrDefaultAsync(x => x.TransactionReference == reference);
                 if (PaymentRecord != null)

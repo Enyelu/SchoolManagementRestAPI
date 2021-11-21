@@ -6,7 +6,7 @@ namespace Repository.Interfaces
 {
     public interface INonAcademicStaffRepo : IGenericRepository <NonAcademicStaff>
     { 
-        Task<NonAcademicStaff> GetNonAcademicStaffAsync(string staffId);
+        Task<NonAcademicStaff> GetNonAcademicStaffAsync(string staffEmail);
         Task<IEnumerable<NonAcademicStaff>> GetAllNonAcademicStaffAsync();
     }
 }

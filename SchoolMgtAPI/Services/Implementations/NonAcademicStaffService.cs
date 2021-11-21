@@ -38,15 +38,10 @@ namespace Services.Implementations
             var appUser = _mapper.Map<AppUser>(NonAcademicStaffDto);
             var address = _mapper.Map<Address>(NonAcademicStaffDto);
 
-            address.Id = Guid.NewGuid().ToString();
-            await _unitOfWork.Address.AddAsync(address);
-            await _unitOfWork.SaveChangesAsync();
-            var readAddress = await _unitOfWork.Address.GetAddressAsync(address.Id);
-
             appUser.IsActive = true;
             appUser.DateCreated = DateTime.UtcNow.ToString();
             appUser.DateModified = appUser.DateCreated.ToString();
-            appUser.Address = readAddress;
+            appUser.Address = address;
 
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -59,7 +54,7 @@ namespace Services.Implementations
                     var encodedEmailToken = Encoding.UTF8.GetBytes(emailToken);
                     var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-                    var callbackUrl = $"{_configuration["appURL"]}/api/Student/ConfirmStudentPassword?email={appUser.Email}&token={validEmailToken}";
+                    var callbackUrl = $"{_configuration["appURL"]}/api/Student/ConfirmStudentEmail?email={appUser.Email}&token={validEmailToken}";
 
                     var mail = new EmailRequest()
                     {
@@ -85,6 +80,7 @@ namespace Services.Implementations
                             Position = position
                         };
                         await _unitOfWork.NonAcademicStaff.AddAsync(NonAcademicStaff);
+                        appUser.NonAcademicStaff = NonAcademicStaff;
                         await _unitOfWork.SaveChangesAsync();
                         transaction.Complete();
                         return Response<string>.Success(null, "Registration was successful");
@@ -95,9 +91,9 @@ namespace Services.Implementations
             }
         }
 
-        public async Task<Response<NonAcademicStaffResponseDto>> ReadNonAcademicStaffAsync(string staffId)
+        public async Task<Response<NonAcademicStaffResponseDto>> ReadNonAcademicStaffAsync(string staffEmail)
         {
-            var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(staffId);
+            var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(staffEmail);
             var staff = _mapper.Map<NonAcademicStaffResponseDto>(readStaff);
 
             if(staff != null)
@@ -128,13 +124,14 @@ namespace Services.Implementations
             return Response<IEnumerable<NonAcademicStaffResponseDto>>.Fail("Unsuccessful. Try again....");
         }
 
-        public async Task<Response<string>> DeactivateNonAcademicStaffAsync(string staffId)
+        public async Task<Response<string>> DeactivateNonAcademicStaffAsync(string staffEmail)
         {
-            var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(staffId);
+            var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(staffEmail);
             
             if (readStaff != null)
             {
                 readStaff.AppUser.IsActive = false;
+                readStaff.AppUser.DateModified = DateTime.UtcNow.ToString();
                 _unitOfWork.NonAcademicStaff.Update(readStaff);
                 await _unitOfWork.SaveChangesAsync();
                 
@@ -145,28 +142,27 @@ namespace Services.Implementations
         }
 
 
-        public async Task<Response<string>> UpdateNonAcademicStaffAsync(NonAcademicStaffDto staff, string staffId)
+        public async Task<Response<string>> UpdateNonAcademicStaffAsync(NonAcademicStaffDto staff, string staffEmail)
         {
-            var readStaff = await _userManager.FindByIdAsync(staffId);
-           
-            if(readStaff != null)
-            {
-                readStaff.FirstName = staff.FirstName;
-                readStaff.MiddleName = staff.MiddleName;
-                readStaff.LastName = staff.LastName;
-                readStaff.Address.StreetNumber = staff.StreetNumber ;
-                readStaff.Address.City = staff.City;
-                readStaff.Address.State = staff.State;
-                readStaff.Address.Country = staff.Country;
+            var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(staffEmail);
 
-                var a =await _userManager.UpdateAsync(readStaff);
-                if(a.Succeeded)
-                {
-                    await _unitOfWork.SaveChangesAsync();
-                    return Response<string>.Success(null, $"Update was successful");
-                }
+
+            if (readStaff != null)
+            {
+                readStaff.AppUser.FirstName = staff.FirstName;
+                readStaff.AppUser.MiddleName = staff.MiddleName;
+                readStaff.AppUser.LastName = staff.LastName;
+                readStaff.AppUser.Address.StreetNumber = staff.StreetNumber ;
+                readStaff.AppUser.Address.City = staff.City;
+                readStaff.AppUser.Address.State = staff.State;
+                readStaff.AppUser.Address.Country = staff.Country;
+                readStaff.AppUser.DateModified = DateTime.UtcNow.ToString();
+
+                _unitOfWork.NonAcademicStaff.Update(readStaff);
+                await _unitOfWork.SaveChangesAsync();
+                return Response<string>.Success(null, $"Update was successful");
             }
-            return Response<string>.Fail("Update was unsuccessful");
+            return Response<string>.Fail($"Update was unsuccessful. {staffEmail} does not exist");
         }
     }
 }

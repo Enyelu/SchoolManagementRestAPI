@@ -7,17 +7,18 @@ using System.Threading.Tasks;
 
 namespace Utilities.Mappings
 {
-    public static class DepartmentMap
+    public static class FacultyMap
     {
-        public static Department DepartmentMapping(string departmentName)
+        public static Faculty FacultyMapping(string facultyName)
         {
-            return new Department()
+            Faculty faculty = new Faculty()
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = departmentName,
-                DateCreated = DateTime.UtcNow.ToString(),
+                Name = facultyName.Trim(),
+                Date = DateTime.Now.ToString(),
                 IsActive = true,
             };
+            return faculty;
         }
     }
 }
