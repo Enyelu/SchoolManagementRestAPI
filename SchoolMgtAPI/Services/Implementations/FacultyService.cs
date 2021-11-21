@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Utilities.AppUnitOfWork;
 using Utilities.Dtos;
 using Utilities.GeneralResponse;
+using Utilities.Mappings;
 
 namespace Services.Implementations
 {
@@ -25,48 +26,44 @@ namespace Services.Implementations
 
         public async Task<Response<string>>AddFaculty(string facultyName)
         {
-            Faculty faculty = new Faculty()
+            var checkFaculty = await _unitOfWork.Faculty.GetFacultyAsync(facultyName);
+
+            if(checkFaculty == null)
             {
-                Id = Guid.NewGuid().ToString(),
-                Name = facultyName.Trim(),
-                Date= DateTime.Now.ToString(),
-                IsActive = true,
-            };
-           
-            var result = _unitOfWork.Faculty.AddAsync(faculty);
-           
-            if (result.IsCompletedSuccessfully)
-            {
+                var faculty = FacultyMap.FacultyMapping(facultyName);
+                await _unitOfWork.Faculty.AddAsync(faculty);
                 await _unitOfWork.SaveChangesAsync();
                 return Response<string>.Success(facultyName, "Added successfully");
             }
-            return Response<string>.Fail("Failed to add faculty");
+            return Response<string>.Fail($"Failed. Faculty with name: {facultyName} already exist");
         }
 
-        public async Task<Response<string>> DeactivateFaculty(string facultyName)
+        public async Task<Response<string>> DeactivateFacultyAsync(string facultyName)
         {
             var faculty = await _unitOfWork.Faculty.GetFacultyAsync(facultyName);
             if (faculty != null)
             {
                 faculty.IsActive = false;
+                await _unitOfWork.SaveChangesAsync();
                 return Response<string>.Success(facultyName, "Deactivated successfully");
             }
             return Response<string>.Fail($"{facultyName} not a faculty");
         }
 
-        public async Task<Response<IEnumerable<FacultyDepartmentsResponseDto>>> ReadDepartmentsInFaculty(string facultyName)
+        public async Task<Response<IEnumerable<FacultyDepartmentsResponseDto>>> ReadDepartmentsInFacultyAsync(string facultyName)
         {
             var faculty = await _unitOfWork.Faculty.GetFacultyAsync(facultyName);
 
             if(faculty != null)
             {
-                var result =  _mapper.Map<IEnumerable<FacultyDepartmentsResponseDto>>(faculty);
-                return Response<IEnumerable<FacultyDepartmentsResponseDto>>.Success(result, "Successfully");
+                var result =  _mapper.Map<IEnumerable<FacultyDepartmentsResponseDto>>(faculty.Departments);
+                var trueResult = result.Where(x => x.IsActive == true);
+                return Response<IEnumerable<FacultyDepartmentsResponseDto>>.Success(trueResult, "Successfully");
             }
             return Response<IEnumerable<FacultyDepartmentsResponseDto>>.Fail( "Unuccessfully.... Faculty does not exist");
         }
 
-        public async Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadLecturersInFaculty(string facultyName)
+        public async Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadLecturersInFacultyAsync(string facultyName)
         {
             var faculty = await _unitOfWork.Faculty.GetFacultyAsync(facultyName);
 
@@ -78,7 +75,7 @@ namespace Services.Implementations
             return Response<IEnumerable<FacultyLecturerResponseDto>>.Fail("Unuccessfully.... Faculty does not exist");
         }
 
-        public async Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadNonAcademinStaffInFaculty(string facultyName)
+        public async Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadNonAcademinStaffInFacultyAsync(string facultyName)
         {
             var faculty = await _unitOfWork.Faculty.GetFacultyAsync(facultyName);
 

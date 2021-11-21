@@ -14,7 +14,7 @@ namespace Utilities.Dtos
         public string Avatar { get; set; }
         public bool IsActive { get; set; }
         public string BirthDate { get; set; }
-        public DateTime DateCreated { get; }
+        public string DateCreated { get; }
         public int Class { get; set; }
         public int Level { get; set; }
         public string Email { get; set; }

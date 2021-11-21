@@ -7,10 +7,11 @@ namespace Models
     public class Course
     {
         [Key]
-        public string Id { get; set; } 
+        public string Id { get; set; } = Guid.NewGuid().ToString(); 
         public string Name { get; set; }
         public string CourseCode { get; set;}
-        public DateTime DateCreated { get; set; }
+        public string DateCreated { get; set; } = DateTime.UtcNow.ToString();
+        public string DateModified { get; set; }
         public bool IsActive { get; set; }
         public Department Department { get; set; }
         public ICollection<Student> Students { get; set; }

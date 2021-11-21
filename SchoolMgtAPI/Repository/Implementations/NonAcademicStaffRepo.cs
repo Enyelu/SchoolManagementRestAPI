@@ -16,11 +16,14 @@ namespace Repository.Implementations
             _context = context; 
         }
 
-        public async Task<NonAcademicStaff> GetNonAcademicStaffAsync(string staffId)
+        public async Task<NonAcademicStaff> GetNonAcademicStaffAsync(string staffEmail)
         {
             var staff = await _context.NonAcademicStaff
                     .Include(x => x.AppUser)
-                    .Include(x => x.Position).FirstOrDefaultAsync(x => x.AppUserId == staffId);
+                    .Include(x => x.Department)
+                    .Include(x => x.AppUser.Address)
+                    .Include(x => x.Position)
+                    .FirstOrDefaultAsync(x => x.AppUser.Email == staffEmail);
             return staff;
         }
 

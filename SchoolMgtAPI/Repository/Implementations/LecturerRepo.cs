@@ -23,6 +23,8 @@ namespace Repository.Implementations
            var lecturer =  await _context.Lecturers.Include(x => x.Courses)
                                                    .Include(x => x.AppUser)
                                                    .Include(x => x.Department)
+                                                   .Include(x => x.Faculty)
+                                                   .Include(x => x.AppUser.Address)
                                                    .FirstOrDefaultAsync(x => x.AppUser.Email == lecturerEmail);
            
             if(lecturer != null) { return lecturer; }
