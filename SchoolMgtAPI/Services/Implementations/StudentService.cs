@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Models;
 using Models.Mail;
-using Repository.Interfaces;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -35,23 +34,20 @@ namespace Services.Implementations
             _mailService = mailService;
             _passwordService = passwordService;
             _unitOfWork = unitOfWork;
-            _mapper = mapper; 
-        }
+            _mapper = mapper;
+        } 
 
-        public async Task<Response<string>> RegisterStudent(RegisterStudentDto student)
+        public async Task<Response<string>> RegisterStudentAsync(RegisterStudentDto student)
         {
-            var appUser =  _mapper.Map<AppUser>(student);
+            var appUser = _mapper.Map<AppUser>(student);
             var address = _mapper.Map<Address>(student);
-            
-            address.Id = Guid.NewGuid().ToString();
-            await _unitOfWork.Address.AddAsync(address);
-            await _unitOfWork.SaveChangesAsync();
-            var readAddress = await _unitOfWork.Address.GetAddressAsync(address.Id);
+            var student1 = _mapper.Map<Student>(student);
 
             appUser.IsActive = true;
             appUser.DateCreated = DateTime.UtcNow.ToString();
             appUser.DateModified = appUser.DateCreated.ToString();
-            appUser.Address = readAddress;
+            appUser.Address = address;
+            appUser.Student = student1;
 
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -64,7 +60,7 @@ namespace Services.Implementations
                     var encodedEmailToken = Encoding.UTF8.GetBytes(emailToken);
                     var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-                    var callbackUrl = $"{_configuration["appURL"]}/api/Student/ConfirmStudentPassword?email={appUser.Email}&token={validEmailToken}";
+                    var callbackUrl = $"{_configuration["AppUrl"]}/api/Student/ConfirmStudentEmail?email={appUser.Email}&token={validEmailToken}";
 
                     var mail = new EmailRequest()
                     {
@@ -75,13 +71,11 @@ namespace Services.Implementations
                     };
 
                     var result = await _mailService.SendMailAsync(mail);
-                    
-                    if(result)
+
+                    if (result)
                     {
                         var department = await _unitOfWork.Department.GetDepartmentAsync(student.DepartmentName);
                         var faculty = await _unitOfWork.Faculty.GetFacultyAsync(student.FacultyName);
-
-                        
 
                         var newStudent = new Student()
                         {
@@ -101,17 +95,17 @@ namespace Services.Implementations
             }
         }
 
-        public async Task<bool> ConfirmStudentPasswordAsync(string email, string token)
+        public async Task<bool> ConfirmStudentEmailAsync(string email, string token)
         {
-            var respose =  await _passwordService.ConfirmEmailAsync(email, token);
+            var respose = await _passwordService.ConfirmEmailAsync(email, token);
 
-            if(respose.Succeeded)
+            if (respose.Succeeded)
             {
                 return true;
             }
             return false;
         }
-        
+
         public async Task<Response<ReadStudentResponseDto>> ReadStudentAsync(string resgitrationNumber)
         {
             var response = await _unitOfWork.Student.GetStudentAsync(resgitrationNumber);
@@ -130,15 +124,15 @@ namespace Services.Implementations
             List<ReadStudentResponseDto> studentsDetail = new List<ReadStudentResponseDto>();
 
             var studentDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
-           
-            return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
+
+            return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentDetail, "Successful");
         }
 
         public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInADepartmentInALevelAsync(int studentsLevel, string department)
         {
             var students = await _unitOfWork.Student.GetAllStudentsInADepartmentInALevelAsync(studentsLevel, department);
 
-            if(students != null)
+            if (students != null)
             {
                 var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
                 return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
@@ -150,13 +144,13 @@ namespace Services.Implementations
         public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInAFacultyInALevelAsync(int studentsLevel, string faculty)
         {
             var students = await _unitOfWork.Student.GetAllStudentsInAFacultyInALevelAsync(studentsLevel, faculty);
-           
-            if(students != null)
+
+            if (students != null)
             {
                 var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
                 return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
             }
-                
+
             return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
         }
 
@@ -164,12 +158,12 @@ namespace Services.Implementations
         {
             var students = await _unitOfWork.Student.GetAllStudentsInDepartmentAsync(department);
 
-            if(students != null)
+            if (students != null)
             {
                 var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
                 return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
             }
-            
+
             return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
         }
 
@@ -177,7 +171,7 @@ namespace Services.Implementations
         {
             var students = await _unitOfWork.Student.GetAllStudentsInFacultyAsync(faculty);
 
-            if(students != null)
+            if (students != null)
             {
                 var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
                 return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
@@ -187,9 +181,9 @@ namespace Services.Implementations
 
         public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentAsync()
         {
-            var students =  await _unitOfWork.Student.GetAllStudentsAsync();
+            var students = await _unitOfWork.Student.GetAllStudentsAsync();
 
-            if(students != null)
+            if (students != null)
             {
                 var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
                 return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
@@ -200,10 +194,11 @@ namespace Services.Implementations
         public async Task<Response<string>> DeactivateStudentAsync(string registrationNumber)
         {
             var student = await _unitOfWork.Student.GetStudentAsync(registrationNumber);
-            
-            if(student != null)
+
+            if (student != null)
             {
                 student.AppUser.IsActive = false;
+                student.AppUser.DateModified = DateTime.UtcNow.ToString();
                 _unitOfWork.Student.Update(student);
                 await _unitOfWork.SaveChangesAsync();
                 return Response<string>.Success(null, "Student deactivated successfully");
@@ -214,12 +209,12 @@ namespace Services.Implementations
         {
             var student = await _unitOfWork.Student.GetStudentAsync(registrationNumber);
             var studentStatus = student.AppUser.IsActive;
-            
-            if(studentStatus)
+
+            if (studentStatus)
             {
                 return Response<string>.Success(null, "Student is active");
             }
-            
+
             return Response<string>.Fail("Student is not active");
         }
 
@@ -229,10 +224,9 @@ namespace Services.Implementations
 
             if (student != null)
             {
-                var courseCount = student.Courses.Count();
                 foreach (var course in courses)
                 {
-                    var searchedCourse = await _unitOfWork.Course.GetCourseByIdOrCourseCodeAsync(course);
+                    var searchedCourse = await _unitOfWork.Course.GetCourseByNameOrCourseCodeAsync(course);
                     searchedCourse.Name = course;
                     student.Courses.Add(searchedCourse);
                     searchedCourse.Students.Add(student);
@@ -241,23 +235,23 @@ namespace Services.Implementations
                 }
                 await _unitOfWork.SaveChangesAsync();
                 var result = student.Courses.ToList();
-                return Response<IEnumerable<Course>>.Success(result, "Registration successful")  ;
+                return Response<IEnumerable<Course>>.Success(result, "Registration successful");
             }
             return Response<IEnumerable<Course>>.Fail("An error occured while adding courses.", (int)HttpStatusCode.ExpectationFailed);
         }
-       
+
         public async Task<Response<IEnumerable<string>>> RemoveCoursesAsync(string studentId, ICollection<string> courses)
         {
 
             var student = await _unitOfWork.Student.GetStudentAsync(null, studentId);
             var registeredCourses = student.Courses;
 
-            if(student != null)
+            if (student != null)
             {
                 foreach (var course in courses)
                 {
-                    var searchedCourse = await _unitOfWork.Course.GetCourseByIdOrCourseCodeAsync(course);
-                   
+                    var searchedCourse = await _unitOfWork.Course.GetCourseByNameOrCourseCodeAsync(course);
+
                     if (registeredCourses.Contains(searchedCourse))
                     {
                         registeredCourses.Remove(searchedCourse);
@@ -271,12 +265,12 @@ namespace Services.Implementations
             }
             return Response<IEnumerable<string>>.Fail("An error occured while removing courses.", (int)HttpStatusCode.ExpectationFailed);
         }
-        
+
         public async Task<Response<IEnumerable<Course>>> ReadRegisteredCoursesAsync(string studentId)
         {
             var courses = await _unitOfWork.Student.GetRegisteredCoursesAsync(studentId);
 
-            if(courses != null)
+            if (courses != null)
             {
                 return Response<IEnumerable<Course>>.Success(courses, "Successful");
             }

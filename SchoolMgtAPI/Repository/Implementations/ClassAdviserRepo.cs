@@ -1,4 +1,5 @@
 ﻿using Data;
+using Models;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,11 @@ namespace Repository.Implementations
         {
             _context = context;
         }
+
+        //public async Task<ClassAdviser>
+
+        //add class ad. to studen
+        //add class adviser
+        //delete class adviser from students
     }
 }

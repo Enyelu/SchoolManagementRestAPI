@@ -10,9 +10,10 @@ namespace Services.Interfaces
 {
     public interface INonAcademicStaffService
     {
-        Task<Response<NonAcademicStaffResponseDto>> ReadNonAcademicStaffAsync(string staffId);
+        Task<Response<string>> RegisterNonAcademicStaff(RegisterNonAcademicStaffDto NonAcademicStaffDto);
+        Task<Response<NonAcademicStaffResponseDto>> ReadNonAcademicStaffAsync(string staffEmail);
         Task<Response<IEnumerable<NonAcademicStaffResponseDto>>> ReadAllNonAcademicStaffAsync();
-        Task<Response<string>> DeactivateNonAcademicStaffAsync(string staffId);
-        Task<Response<string>> UpdateNonAcademicStaffAsync(NonAcademicStaffDto staff, string staffId);
+        Task<Response<string>> DeactivateNonAcademicStaffAsync(string staffEmail);
+        Task<Response<string>> UpdateNonAcademicStaffAsync(NonAcademicStaffDto staff, string staffEmail);
     }
 }

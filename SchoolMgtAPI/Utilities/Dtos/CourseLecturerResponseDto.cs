@@ -13,7 +13,7 @@ namespace Utilities.Dtos
         public string Avatar { get; set; }
         public bool IsActive { get; set; }
         public string BirthDate { get; set; }
-        public DateTime DateCreated { get; set; }
+        public string DateCreated { get; set; }
         public string StreetNumber { get; set; }
         public string City { get; set; }
         public string State { get; set; }

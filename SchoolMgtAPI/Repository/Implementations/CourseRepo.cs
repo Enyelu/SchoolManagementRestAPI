@@ -19,36 +19,16 @@ namespace Repository.Implementations
             _context = context; 
         }
 
-        public async Task<Course> GetCourseByIdOrCourseCodeAsync(string courseCode = null, string courseId = null)
+        public async Task<Course> GetCourseByNameOrCourseCodeAsync(string courseCode = null, string courseName = null)
         {
-            string searchTerm = courseCode ?? courseId;
+            string searchTerm = courseCode ?? courseName;
             var course = await _context.Courses
                                            .Include(x => x.Students)
                                            .Include(x => x.Department)
                                            .Include(x => x.Lecturers)
-                                           .FirstOrDefaultAsync(x => x.Id == searchTerm || x.CourseCode == searchTerm);
+                                           .FirstOrDefaultAsync(x => x.Name == searchTerm || x.CourseCode == searchTerm);
             if (course != null) { return course; }
             
-            return null;
-        }
-         
-        public async Task<IEnumerable<Course>> CourseLecturers(string courseCode = null, string courseId = null)
-        {
-            string searchTerm = courseCode ??= courseId;
-            var courseWithLecturers = _context.Courses.Include(x => x.Lecturers).Where(x => x.CourseCode == courseCode || x.Id == courseId);
-
-            if (courseWithLecturers != null) { return await courseWithLecturers.ToListAsync(); }
-
-            return null;
-        }
-
-        public async Task<IEnumerable<Course>> CourseStudents(string courseCode = null, string courseId = null)
-        {
-            string searchTerm = courseCode ??= courseId;
-            var courseWithLecturers = _context.Courses.Include(x => x.Students).Where(x => x.CourseCode == courseCode || x.Id == courseId);
-
-            if (courseWithLecturers != null) { return await courseWithLecturers.ToListAsync(); }
-
             return null;
         }
     }

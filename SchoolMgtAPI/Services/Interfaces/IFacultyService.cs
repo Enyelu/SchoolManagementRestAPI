@@ -11,9 +11,9 @@ namespace Services.Interfaces
     public interface IFacultyService
     {
         Task<Response<string>> AddFaculty(string facultyName);
-        Task<Response<string>> DeactivateFaculty(string facultyName);
-        Task<Response<IEnumerable<FacultyDepartmentsResponseDto>>> ReadDepartmentsInFaculty(string facultyName);
-        Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadLecturersInFaculty(string facultyName);
-        Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadNonAcademinStaffInFaculty(string facultyName);
+        Task<Response<string>> DeactivateFacultyAsync(string facultyName);
+        Task<Response<IEnumerable<FacultyDepartmentsResponseDto>>> ReadDepartmentsInFacultyAsync(string facultyName);
+        Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadLecturersInFacultyAsync(string facultyName);
+        Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadNonAcademinStaffInFacultyAsync(string facultyName);
     }
 }

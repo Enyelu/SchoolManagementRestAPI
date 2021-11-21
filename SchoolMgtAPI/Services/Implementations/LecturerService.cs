@@ -31,20 +31,15 @@ namespace Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<Response<string>> RegisterLecturer(RegisterLecturerDto lecturerDto)
+        public async Task<Response<string>> RegisterLecturerAsync(RegisterLecturerDto lecturerDto)
         {
             var appUser = _mapper.Map<AppUser>(lecturerDto);
             var address = _mapper.Map<Address>(lecturerDto);
 
-            address.Id = Guid.NewGuid().ToString();
-            await _unitOfWork.Address.AddAsync(address);
-            await _unitOfWork.SaveChangesAsync();
-            var readAddress = await _unitOfWork.Address.GetAddressAsync(address.Id);
-
             appUser.IsActive = true;
             appUser.DateCreated = DateTime.UtcNow.ToString();
             appUser.DateModified = appUser.DateCreated.ToString();
-            appUser.Address = readAddress;
+            appUser.Address = address;
 
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -57,7 +52,7 @@ namespace Services.Implementations
                     var encodedEmailToken = Encoding.UTF8.GetBytes(emailToken);
                     var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-                    var callbackUrl = $"{_configuration["appURL"]}/api/Student/ConfirmStudentPassword?email={appUser.Email}&token={validEmailToken}";
+                    var callbackUrl = $"{_configuration["appURL"]}/api/Student/ConfirmStudentEmail?email={appUser.Email}&token={validEmailToken}";
 
                     var mail = new EmailRequest()
                     {
@@ -81,6 +76,7 @@ namespace Services.Implementations
                             Faculty = faculty,
                         };
                         await _unitOfWork.Lecturer.AddAsync(newLecturer);
+                        appUser.Lecturer = newLecturer;
                         await _unitOfWork.SaveChangesAsync();
                         transaction.Complete();
                         return Response<string>.Success(null, "Registration was successful");
@@ -93,14 +89,31 @@ namespace Services.Implementations
 
         public async Task<Response<LecturerResponseDto>> ReadLecturerDetailAsync(string lecturerEmail)
         {
-            var lecturer = await _userManager.FindByEmailAsync(lecturerEmail);
+            var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
             
-            if (lecturer == null)
+            if (lecturer != null)
             {
                 var mappedLecturer = _mapper.Map<LecturerResponseDto>(lecturer);
                 return Response<LecturerResponseDto>.Success(mappedLecturer, "Successful");
             }
             return Response<LecturerResponseDto>.Fail("Unsuccessful. Lecturer not found");
+        }
+
+        public async Task<Response<string>> AssignCourseToLecturerAsync(string lecturerEmail, string courseName, string courseCode)
+        {
+            var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
+            var course = await _unitOfWork.Course.GetCourseByNameOrCourseCodeAsync(courseCode, courseName);
+            var responseCourse = courseName ?? courseCode;
+
+            if (lecturer != null)
+            {
+                lecturer.Courses.Add(course);
+                _unitOfWork.Lecturer.Update(lecturer);
+                await _unitOfWork.SaveChangesAsync();
+                
+                return Response<string>.Success(null, $"Successfully added {responseCourse}");
+            }
+            return Response<string>.Fail($"Unsuccessful. {responseCourse} was not added to {lecturer.AppUser.FirstName} with email: {lecturerEmail}.");
         }
 
         public async Task<Response<string>> DeactivateLecturerAsync(string lecturerEmail)
@@ -110,9 +123,10 @@ namespace Services.Implementations
             if(lecturer != null)
             {
                 lecturer.IsActive = false;
-                var result = _userManager.UpdateAsync(lecturer);
+                lecturer.DateModified = DateTime.UtcNow.ToString();
+                var result = await _userManager.UpdateAsync(lecturer);
 
-                if(result.IsCompleted)
+                if(result.Succeeded)
                 {
                     await _unitOfWork.SaveChangesAsync();
                     return Response<string>.Success(null, "Deactivation was successful");
@@ -124,27 +138,25 @@ namespace Services.Implementations
 
         public async Task<Response<string>> UpdateLecturerAsync(LecturerDto lecturerDto, string lecturerEmail)
         {
-            var lecturer = await _userManager.FindByEmailAsync(lecturerEmail);
-            lecturer.FirstName =  lecturerDto.FirstName;
-            lecturer.MiddleName = lecturerDto.MiddleName;
-            lecturer.LastName = lecturerDto.LastName;
-            lecturer.PhoneNumber = lecturerDto.PhoneNumber;
-            lecturer.Address.StreetNumber = lecturerDto.StreetNumber;
-            lecturer.Address.City = lecturerDto.City;
-            lecturer.Address.State = lecturerDto.State;   
-            lecturer.Address.Country = lecturerDto.Country;
+            var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
 
-            var result =  await _userManager.UpdateAsync(lecturer);
-
-            if(result.Succeeded)
+            if(lecturer != null)
             {
+                lecturer.AppUser.FirstName = lecturerDto.FirstName;
+                lecturer.AppUser.MiddleName = lecturerDto.MiddleName;
+                lecturer.AppUser.LastName = lecturerDto.LastName;
+                lecturer.AppUser.PhoneNumber = lecturerDto.PhoneNumber;
+                lecturer.AppUser.Address.StreetNumber = lecturerDto.StreetNumber;
+                lecturer.AppUser.Address.City = lecturerDto.City;
+                lecturer.AppUser.Address.State = lecturerDto.State;
+                lecturer.AppUser.Address.Country = lecturerDto.Country;
+                lecturer.AppUser.DateModified = DateTime.UtcNow.ToString();
+
+                _unitOfWork.Lecturer.Update(lecturer);
                 await _unitOfWork.SaveChangesAsync();
-                return Response<string>.Success(null, $"{lecturer.FirstName} {lecturer.LastName} updated successfully");
+                return Response<string>.Success(null, $"{lecturer.AppUser.FirstName} {lecturer.AppUser.LastName} updated successfully");
             }
-            else
-            {
-                return Response<string>.Fail("an error occured while attempting to update lecturer");
-            }
+            return Response<string>.Fail($"Udate was unsuccessful. {lecturerEmail} does not exist");
         }
     }
 }

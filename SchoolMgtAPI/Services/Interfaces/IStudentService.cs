@@ -11,6 +11,8 @@ namespace Services.Interfaces
 {
      public interface IStudentService
      {
+        Task<Response<string>> RegisterStudentAsync(RegisterStudentDto student);
+        Task<bool> ConfirmStudentEmailAsync(string email, string token);
         Task<Response<ReadStudentResponseDto>> ReadStudentAsync(string resgitrationNumber);
         Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInALevelAsync(int studentsLevel);
         Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInADepartmentInALevelAsync(int studentsLevel, string department);

@@ -26,7 +26,7 @@ namespace Repository.Implementations
                 return department;
             }
             return null;
-        }
+        } 
 
         public async Task<IEnumerable<Department>> GetAllDepartmentDetailsAsync()
         {
@@ -34,12 +34,13 @@ namespace Repository.Implementations
                                              .Include(x => x.NonAcademicStaff)
                                              .Include(x => x.Courses)
                                              .Include(x => x.Faculty)
+                                             .Where(x => x.IsActive == true)
                                              .ToListAsync();
         }
 
         public async Task<IEnumerable<Department>> GetAllDepartmentAsync()
         {
-            var departments =  await _context.Departments.ToListAsync();
+            var departments =  await _context.Departments.Where(x => x.IsActive == true).ToListAsync();
             if (departments != null)
             {
                 return departments;
