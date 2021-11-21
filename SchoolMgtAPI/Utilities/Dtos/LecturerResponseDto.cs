@@ -20,6 +20,7 @@ namespace Utilities.Dtos
         public string State { get; set; }
         public string Country { get; set; }
         public string Department { get; set; }
+        public string Faculty { get; set; }
         public ICollection<Course> Courses { get; set; }
     }
 }

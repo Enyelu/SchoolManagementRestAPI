@@ -9,8 +9,6 @@ namespace Repository.Interfaces
 {
     public interface ICourseRepo : IGenericRepository<Course>
     {
-        Task<Course> GetCourseByIdOrCourseCodeAsync(string courseCode = null, string courseId = null);
-        Task<IEnumerable<Course>> CourseLecturers(string courseCode = null, string courseId = null);
-        Task<IEnumerable<Course>> CourseStudents(string courseCode = null, string courseId = null);
+        Task<Course> GetCourseByNameOrCourseCodeAsync(string courseCode = null, string courseName = null);
     }
 }

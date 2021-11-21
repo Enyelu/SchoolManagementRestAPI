@@ -25,7 +25,6 @@ namespace Seeder
 
                 var address = new Address()
                 {
-                    Id = Guid.NewGuid().ToString(),
                     StreetNumber = "205",
                     City = "Owerri",
                     State = "Imo",

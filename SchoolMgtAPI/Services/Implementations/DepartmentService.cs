@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Utilities.AppUnitOfWork;
+using Utilities.Dtos;
 using Utilities.GeneralResponse;
 using Utilities.Mappings;
 
@@ -24,13 +25,25 @@ namespace Services.Implementations
         }
 
 
-        public async Task AddDepartmentAsync(string departmentName, string facultyName)
-        {
-            var department = DepartmentMap.DepartmentMapping(departmentName);
-            var readFaculty = await _unitOfWork.Faculty.GetFacultyAsync(facultyName);
-            department.Faculty = readFaculty;
-            await _unitOfWork.Department.AddAsync(department);
-            await _unitOfWork.SaveChangesAsync();
+        public async Task<Response<Department>> AddDepartmentAsync(string departmentName, string facultyName)
+        {  
+            var checkDepartment = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
+
+            if(checkDepartment == null)
+            {
+                var department = DepartmentMap.DepartmentMapping(departmentName);
+                var readFaculty = await _unitOfWork.Faculty.GetFacultyAsync(facultyName);
+
+                if (readFaculty != null)
+                {
+                    department.Faculty = readFaculty;
+                    await _unitOfWork.Department.AddAsync(department);
+                    await _unitOfWork.SaveChangesAsync();
+                    return Response<Department>.Success(department, "Successfully added");
+                }
+                return Response<Department>.Fail($"Unsuccessfully. Faculty: {facultyName}, does not exist");
+            }
+            return Response<Department>.Fail($"Unsuccessfully. Department: {departmentName}, already exist");
         }
 
         public async Task<bool> DeactivateDepartmentAsync( string departmentName)
@@ -40,23 +53,25 @@ namespace Services.Implementations
             if (department != null)
             {
                 department.IsActive = false;
+                await _unitOfWork.SaveChangesAsync();
                 return true;
             }
             return false;
         }
 
-        public async Task<Response<IEnumerable<Department>>> ReadAllDepartments()
+        public async Task<Response<IEnumerable<ReadDepartmentDto>>> ReadAllDepartmentsAsync()
         {
-            var departments = await _unitOfWork.Department.GetAllDepartmentAsync();
+            var departments = await _unitOfWork.Department.GetAllDepartmentDetailsAsync();
 
             if(departments.Count() > 0)
             {
-                return Response<IEnumerable<Department>>.Success(departments,"Successful");
+                var mappedDepartments = _mapper.Map<IEnumerable<ReadDepartmentDto>>(departments);
+                return Response<IEnumerable<ReadDepartmentDto>>.Success(mappedDepartments, "Successful");
             }
-            return Response<IEnumerable<Department>>.Fail("Successful");
+            return Response<IEnumerable<ReadDepartmentDto>>.Fail("UnSuccessful");
         }
 
-        public async Task<Response<string>> AddLecturerToDepartment(string lecturerEmail, string departmentName)
+        public async Task<Response<string>> AddLecturerToDepartmentAsync(string lecturerEmail, string departmentName)
         {
             var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
             var ReadDepartment = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
@@ -102,7 +117,7 @@ namespace Services.Implementations
 
         public async Task<Response<string>> AddCourseToDepartmentAsync(string departmentName, string courseCode)
         {
-            var course = await _unitOfWork.Course.GetCourseByIdOrCourseCodeAsync(courseCode);
+            var course = await _unitOfWork.Course.GetCourseByNameOrCourseCodeAsync(courseCode);
             if (course != null)
             {
                 var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
@@ -121,7 +136,7 @@ namespace Services.Implementations
 
         public async Task<Response<string>> DeactivateDepartmentCourseAsycn(string departmentName, string courseCode)
         {
-            var course = await _unitOfWork.Course.GetCourseByIdOrCourseCodeAsync(courseCode);
+            var course = await _unitOfWork.Course.GetCourseByNameOrCourseCodeAsync(courseCode);
             if (course != null)
             {
                 var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName);

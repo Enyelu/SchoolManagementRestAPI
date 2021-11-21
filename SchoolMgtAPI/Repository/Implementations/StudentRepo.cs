@@ -29,6 +29,7 @@ namespace Repository.Implementations
                           .Include(x => x.AppUser)
                           .Include(x => x.ClassAdviser)
                           .Include(x => x.Department)
+                          .Include(x => x.AppUser.Address)
                           .Include(x => x.Courses)
                           .FirstOrDefaultAsync(x => x.RegistrationNumber == searchTerm 
                                                  || x.AppUser.Id == searchTerm);
@@ -43,6 +44,7 @@ namespace Repository.Implementations
                           .Include(x => x.AppUser)
                           .Include(x => x.Department)
                           .Include(x => x.Faculty)
+                          .Include(x => x.AppUser.Address)
                           .Where(x => x.Level == studentsLevel);
 
             if (students != null) { return await students.ToListAsync(); }
@@ -55,6 +57,7 @@ namespace Repository.Implementations
             var students = studentTable
                           .Include(x => x.AppUser)
                           .Include(x => x.Department)
+                          .Include(x => x.AppUser.Address)
                           .Where(x => x.Level == studentsLevel && x.Department.Name.Trim().ToLower() == department.Trim().ToLower());
 
             if (students != null) { return await students.ToListAsync(); }
@@ -68,6 +71,7 @@ namespace Repository.Implementations
                           .Include(x => x.AppUser)
                           .Include(x => x.Department)
                           .Include(x => x.Faculty)
+                          .Include(x => x.AppUser.Address)
                           .Where(x => x.Level == studentsLevel && x.Faculty.Name.Trim().ToLower() == faculty.Trim().ToLower());
 
             if (students != null) { return await students.ToListAsync(); }
@@ -81,6 +85,7 @@ namespace Repository.Implementations
                           .Include(x => x.AppUser)
                           .Include(x => x.Department)
                           .Include(x => x.Faculty)
+                          .Include(x => x.AppUser.Address)
                           .Where(x => x.Department.Name.Trim().ToLower() == department.Trim().ToLower());
 
             if (students != null) { return await students.ToListAsync(); }
@@ -92,7 +97,9 @@ namespace Repository.Implementations
         {
             var students = studentTable
                           .Include(x => x.AppUser)
+                          .Include(x => x.Department)
                           .Include(x => x.Faculty)
+                          .Include(x => x.AppUser.Address)
                           .Where(x => x.Faculty.Name.Trim().ToLower() == faculty.Trim().ToLower());
 
             if (students != null) { return await students.ToListAsync(); }
@@ -107,6 +114,8 @@ namespace Repository.Implementations
                           .Include(x => x.AppUser)
                           .Include(x => x.ClassAdviser)
                           .Include(x => x.Department)
+                          .Include(x => x.Faculty)
+                          .Include(x => x.AppUser.Address)
                           .Include(x => x.Courses).Where(x => x.AppUser.IsActive == true);
             
             if(students != null) { return await students.ToListAsync(); }
