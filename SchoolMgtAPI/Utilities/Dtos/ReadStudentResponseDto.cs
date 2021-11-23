@@ -8,7 +8,6 @@ namespace Utilities.Dtos
 {
     public class ReadStudentResponseDto
     {
-        public string AppUserId { get; set; }
         public string RegistrationNumber { get; set; }
         public string FullName { get; set; }
         public string Avatar { get; set; }
@@ -18,7 +17,6 @@ namespace Utilities.Dtos
         public int Class { get; set; }
         public int Level { get; set; }
         public string Email { get; set; }
-        public string Id { get; set; }
         public string Department { get; set; }
         public string Faculty { get; set; }
         public string StreetNumber { get; set; }
