@@ -264,10 +264,12 @@ namespace Data.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
                     CourseCode = table.Column<string>(type: "text", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CourseUnit = table.Column<int>(type: "integer", nullable: false),
+                    DateCreated = table.Column<string>(type: "text", nullable: true),
+                    DateModified = table.Column<string>(type: "text", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    DepartmentId = table.Column<string>(type: "text", nullable: true),
-                    FacultyId = table.Column<string>(type: "text", nullable: true)
+                    FacultyId = table.Column<string>(type: "text", nullable: true),
+                    DepartmentId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -359,21 +361,20 @@ namespace Data.Migrations
                 name: "ClassAdvisersers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    LecturerId = table.Column<string>(type: "text", nullable: true),
-                    Class = table.Column<string>(type: "text", nullable: true),
-                    DateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    LecturerId = table.Column<string>(type: "text", nullable: false),
+                    Level = table.Column<int>(type: "integer", nullable: false),
+                    IsCourseAdviser = table.Column<bool>(type: "boolean", nullable: false),
+                    DateTime = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClassAdvisersers", x => x.Id);
+                    table.PrimaryKey("PK_ClassAdvisersers", x => x.LecturerId);
                     table.ForeignKey(
                         name: "FK_ClassAdvisersers_Lecturers_LecturerId",
                         column: x => x.LecturerId,
                         principalTable: "Lecturers",
                         principalColumn: "AppUserId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -408,7 +409,7 @@ namespace Data.Migrations
                     RegistrationNumber = table.Column<string>(type: "text", nullable: true),
                     Class = table.Column<int>(type: "integer", nullable: false),
                     Level = table.Column<int>(type: "integer", nullable: false),
-                    ClassAdviserId = table.Column<int>(type: "integer", nullable: true),
+                    ClassAdviserLecturerId = table.Column<string>(type: "text", nullable: true),
                     DepartmentId = table.Column<string>(type: "text", nullable: true),
                     FacultyId = table.Column<string>(type: "text", nullable: true)
                 },
@@ -422,10 +423,10 @@ namespace Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Students_ClassAdvisersers_ClassAdviserId",
-                        column: x => x.ClassAdviserId,
+                        name: "FK_Students_ClassAdvisersers_ClassAdviserLecturerId",
+                        column: x => x.ClassAdviserLecturerId,
                         principalTable: "ClassAdvisersers",
-                        principalColumn: "Id",
+                        principalColumn: "LecturerId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Students_Departments_DepartmentId",
@@ -508,11 +509,6 @@ namespace Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClassAdvisersers_LecturerId",
-                table: "ClassAdvisersers",
-                column: "LecturerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CourseLecturer_LecturersAppUserId",
                 table: "CourseLecturer",
                 column: "LecturersAppUserId");
@@ -563,9 +559,9 @@ namespace Data.Migrations
                 column: "PositionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Students_ClassAdviserId",
+                name: "IX_Students_ClassAdviserLecturerId",
                 table: "Students",
-                column: "ClassAdviserId");
+                column: "ClassAdviserLecturerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Students_DepartmentId",
