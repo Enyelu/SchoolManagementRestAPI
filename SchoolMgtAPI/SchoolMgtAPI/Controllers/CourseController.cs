@@ -38,7 +38,7 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPost("Update")]
+        [HttpPut("Update")]
         public async Task<IActionResult> UpdateCourse(CourseUpdateDto courseUpdateDto, string courseCode)
         {
             var response = await _courseService.UpdateCourseAsync(courseUpdateDto, courseCode);

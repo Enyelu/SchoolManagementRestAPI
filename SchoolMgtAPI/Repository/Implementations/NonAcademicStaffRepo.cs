@@ -31,7 +31,10 @@ namespace Repository.Implementations
         {
             var staff = await _context.NonAcademicStaff
                                       .Include(x => x.AppUser)
-                                      .Include(x => x.Position).Where(x => x.AppUser.IsActive == true).ToListAsync();
+                                      .ThenInclude(x => x.Address)
+                                      .Include(x => x.Position)
+                                      .Include(x => x.Department)
+                                      .Where(x => x.AppUser.IsActive == true).ToListAsync();
             return staff;
         }
 
