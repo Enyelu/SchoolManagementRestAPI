@@ -23,7 +23,7 @@ namespace Services.Implementations
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<Response<ClassAdviserResponseDto>> ReadClassAdviser(int level, string department)
+        public async Task<Response<ClassAdviserResponseDto>> ReadClassAdviserAsync(int level, string department)
         {
             var classAdviser = await _unitOfWork.ClassAdviser.GetClassAdviserByDepartmentAndLevelAsync(level, department);
             
@@ -34,7 +34,7 @@ namespace Services.Implementations
             }
             return Response<ClassAdviserResponseDto>.Success(null, "No lecturer advise this level");
         }
-        public async Task<Response<string>> AssignClassAdviser(string lecturerEmail, int level)
+        public async Task<Response<string>> AssignClassAdviserAsync(string lecturerEmail, int level)
         {
             var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
 
@@ -48,5 +48,21 @@ namespace Services.Implementations
             };
             return Response<string>.Fail($"Unsuccessfully. {lecturerEmail} is not a lecturer");
         }
+
+        public async Task<Response<string>> DeactivateClassAdviserAsync(int level, string department)
+        {
+            var classAdviser = await _unitOfWork.ClassAdviser.GetClassAdviserByDepartmentAndLevelAsync(level, department);
+
+            if (classAdviser != null)
+            {
+                classAdviser.IsCourseAdviser = false;
+                _unitOfWork.ClassAdviser.Update(classAdviser);
+                await _unitOfWork.SaveChangesAsync();
+                return Response<string>.Success(null, $"Successfully deactivated {classAdviser.Lecturer.AppUser.Email}  as class Adviser of level {level}");
+            };
+            return Response<string>.Fail($"Unsuccessfully. No class adviser for this level");
+        }
     }
 }
+
+
