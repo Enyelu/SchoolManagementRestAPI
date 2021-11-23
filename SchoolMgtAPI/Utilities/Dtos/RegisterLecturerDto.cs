@@ -13,8 +13,6 @@
         public string Password { get; set; }
         public string PhoneNumber { get; set; }
         public string BirthDate { get; set; }
-        public string DateCreated { get; set; }
-        public string DateModified { get; set; }
         public string DepartmentName { get; set; }
         public string FacultyName { get; set; }
         public string StreetNumber { get; set; }
