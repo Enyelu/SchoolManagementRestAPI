@@ -3,15 +3,17 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(SchoolDbContext))]
-    partial class SchoolDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211122184556_courseModelUpdate")]
+    partial class courseModelUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -302,19 +304,23 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Models.ClassAdviser", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Class")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("LecturerId")
                         .HasColumnType("text");
 
-                    b.Property<string>("DateTime")
-                        .HasColumnType("text");
+                    b.HasKey("Id");
 
-                    b.Property<bool>("IsCourseAdviser")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("integer");
-
-                    b.HasKey("LecturerId");
+                    b.HasIndex("LecturerId");
 
                     b.ToTable("ClassAdvisersers");
                 });
@@ -518,8 +524,8 @@ namespace Data.Migrations
                     b.Property<int>("Class")
                         .HasColumnType("integer");
 
-                    b.Property<string>("ClassAdviserLecturerId")
-                        .HasColumnType("text");
+                    b.Property<int?>("ClassAdviserId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("DepartmentId")
                         .HasColumnType("text");
@@ -535,7 +541,7 @@ namespace Data.Migrations
 
                     b.HasKey("AppUserId");
 
-                    b.HasIndex("ClassAdviserLecturerId");
+                    b.HasIndex("ClassAdviserId");
 
                     b.HasIndex("DepartmentId");
 
@@ -637,10 +643,8 @@ namespace Data.Migrations
             modelBuilder.Entity("Models.ClassAdviser", b =>
                 {
                     b.HasOne("Models.Lecturer", "Lecturer")
-                        .WithOne("ClassAdviser")
-                        .HasForeignKey("Models.ClassAdviser", "LecturerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("LecturerId");
 
                     b.Navigation("Lecturer");
                 });
@@ -651,13 +655,11 @@ namespace Data.Migrations
                         .WithMany("Courses")
                         .HasForeignKey("DepartmentId");
 
-                    b.HasOne("Models.Faculty", "Faculty")
+                    b.HasOne("Models.Faculty", null)
                         .WithMany("Courses")
                         .HasForeignKey("FacultyId");
 
                     b.Navigation("Department");
-
-                    b.Navigation("Faculty");
                 });
 
             modelBuilder.Entity("Models.Department", b =>
@@ -731,7 +733,7 @@ namespace Data.Migrations
 
                     b.HasOne("Models.ClassAdviser", "ClassAdviser")
                         .WithMany("Students")
-                        .HasForeignKey("ClassAdviserLecturerId");
+                        .HasForeignKey("ClassAdviserId");
 
                     b.HasOne("Models.Department", "Department")
                         .WithMany()
@@ -784,11 +786,6 @@ namespace Data.Migrations
                     b.Navigation("NonAcademicStaff");
 
                     b.Navigation("Students");
-                });
-
-            modelBuilder.Entity("Models.Lecturer", b =>
-                {
-                    b.Navigation("ClassAdviser");
                 });
 
             modelBuilder.Entity("Models.NonAcademicStaffPosition", b =>

@@ -2,10 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Repository.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Repository.Implementations
@@ -22,6 +18,10 @@ namespace Repository.Implementations
         {
           return  await _context.Faculties
                     .Include(x => x.Courses)
+                    .ThenInclude(x => x.Department)
+                    .ThenInclude(x => x.Lecturer)
+                    .ThenInclude(x => x.AppUser)
+                    .ThenInclude(x => x.Student)
                     .Include(x => x.Students)
                     .Include(x => x.Lecturer)
                     .Include(x => x.Departments)
