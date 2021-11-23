@@ -41,13 +41,12 @@ namespace Services.Implementations
         {
             var appUser = _mapper.Map<AppUser>(student);
             var address = _mapper.Map<Address>(student);
-            var student1 = _mapper.Map<Student>(student);
+            
 
             appUser.IsActive = true;
             appUser.DateCreated = DateTime.UtcNow.ToString();
             appUser.DateModified = appUser.DateCreated.ToString();
             appUser.Address = address;
-            appUser.Student = student1;
 
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -76,15 +75,20 @@ namespace Services.Implementations
                     {
                         var department = await _unitOfWork.Department.GetDepartmentAsync(student.DepartmentName);
                         var faculty = await _unitOfWork.Faculty.GetFacultyAsync(student.FacultyName);
+                        var classAdviser = await _unitOfWork.ClassAdviser.GetClassAdviserByEmailAsync(student.Email);
 
                         var newStudent = new Student()
                         {
-                            AppUser = appUser,
+                            RegistrationNumber = student.RegistrationNumber,
                             Class = student.Class,
+                            Level = student.Level,
+                            AppUser = appUser,
+                            ClassAdviser = classAdviser,
                             Department = department,
                             Faculty = faculty,
                         };
-                        await _unitOfWork.Student.AddAsync(newStudent);
+                        appUser.Student = newStudent;
+                        await _userManager.UpdateAsync(appUser);
                         await _unitOfWork.SaveChangesAsync();
                         transaction.Complete();
                         return Response<string>.Success(null, "Registration was successful");

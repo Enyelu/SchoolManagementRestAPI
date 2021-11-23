@@ -25,7 +25,7 @@ namespace Services.Implementations
         }
 
 
-        public async Task<Response<Department>> AddDepartmentAsync(string departmentName, string facultyName)
+        public async Task<Response<string>> AddDepartmentAsync(string departmentName, string facultyName)
         {  
             var checkDepartment = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
 
@@ -39,11 +39,11 @@ namespace Services.Implementations
                     department.Faculty = readFaculty;
                     await _unitOfWork.Department.AddAsync(department);
                     await _unitOfWork.SaveChangesAsync();
-                    return Response<Department>.Success(department, "Successfully added");
+                    return Response<string>.Success(null, $"Successfully created {departmentName} department and added to {facultyName} faculty");
                 }
-                return Response<Department>.Fail($"Unsuccessfully. Faculty: {facultyName}, does not exist");
+                return Response<string>.Fail($"Unsuccessfully. Faculty: {facultyName}, does not exist");
             }
-            return Response<Department>.Fail($"Unsuccessfully. Department: {departmentName}, already exist");
+            return Response<string>.Fail($"Unsuccessfully. Department: {departmentName}, already exist");
         }
 
         public async Task<bool> DeactivateDepartmentAsync( string departmentName)
@@ -62,10 +62,11 @@ namespace Services.Implementations
         public async Task<Response<IEnumerable<ReadDepartmentDto>>> ReadAllDepartmentsAsync()
         {
             var departments = await _unitOfWork.Department.GetAllDepartmentDetailsAsync();
+            var activeDepartmentc = departments.Where(d => d.IsActive = true);
 
-            if(departments.Count() > 0)
+            if (activeDepartmentc.Count() > 0)
             {
-                var mappedDepartments = _mapper.Map<IEnumerable<ReadDepartmentDto>>(departments);
+                var mappedDepartments = _mapper.Map<IEnumerable<ReadDepartmentDto>>(activeDepartmentc);
                 return Response<IEnumerable<ReadDepartmentDto>>.Success(mappedDepartments, "Successful");
             }
             return Response<IEnumerable<ReadDepartmentDto>>.Fail("UnSuccessful");
@@ -80,10 +81,10 @@ namespace Services.Implementations
             {
                 if (ReadDepartment != null)
                 {
-                    ReadDepartment.Lecturer.Add(lecturer);
-                    _unitOfWork.Department.Update(ReadDepartment);
+                    lecturer.Department = ReadDepartment;
+                    _unitOfWork.Lecturer.Update(lecturer);
                     await _unitOfWork.SaveChangesAsync();
-                    return Response<string>.Success(null, "Lecturer added successfully");
+                    return Response<string>.Success(null, $"Lecturer added successfully to {departmentName} department");
                 }
                 return Response<string>.Fail("Department does not exist");
             }
@@ -103,65 +104,72 @@ namespace Services.Implementations
             return Response<string>.Fail("Lecturer deactivation not successfully");
         }
 
-        public async Task<Response<IEnumerable<Lecturer>>> GetAllLecturersInADepartmentAsync(string departmentName)
+        public async Task<Response<IEnumerable<LecturerResponseDto>>> GetAllLecturersInADepartmentAsync(string departmentName)
         {
             var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
-
-            if(department != null)
+            var departmentLecturers = department.Lecturer.Where(x => x.AppUser.IsActive = true);
+            
+            if (department != null)
             {
-                var lecturers = department.Lecturer.ToList();
-                return Response<IEnumerable<Lecturer>>.Success(lecturers, "Lecturer added successfully");
-            }
-            return Response<IEnumerable<Lecturer>>.Fail("department does not exist");
-        }
-
-        public async Task<Response<string>> AddCourseToDepartmentAsync(string departmentName, string courseCode)
-        {
-            var course = await _unitOfWork.Course.GetCourseByNameOrCourseCodeAsync(courseCode);
-            if (course != null)
-            {
-                var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
-
-                if(department != null)
+                if(departmentLecturers != null)
                 {
-                    department.Courses.Add(course);
-                    _unitOfWork.Department.Update(department);
-                    await _unitOfWork.SaveChangesAsync();
-                    return Response<string>.Success(null, $"{course.Name} {(courseCode)} added successfully");
+                    var lecturers = _mapper.Map<IEnumerable<LecturerResponseDto>>(departmentLecturers);
+                    return Response<IEnumerable<LecturerResponseDto>>.Success(lecturers, "successfully");
                 }
-                return Response<string>.Fail("department does not exist");
+                return Response<IEnumerable<LecturerResponseDto>>.Success(null, "No lecturer exist here at the moment");
             }
-            return Response<string>.Fail("Course does not exist");
+            return Response<IEnumerable<LecturerResponseDto>>.Fail("department does not exist");
         }
 
-        public async Task<Response<string>> DeactivateDepartmentCourseAsycn(string departmentName, string courseCode)
-        {
-            var course = await _unitOfWork.Course.GetCourseByNameOrCourseCodeAsync(courseCode);
-            if (course != null)
-            {
-                var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
-
-                if (department != null)
-                {
-                    var readCourse = department.Courses.FirstOrDefault(x => x.CourseCode.ToLower().Trim() == courseCode.ToLower().Trim() ).IsActive = false;
-                    _unitOfWork.Department.Update(department);
-                    await _unitOfWork.SaveChangesAsync();
-                    return Response<string>.Success(null, $"{course.Name} {(courseCode)} deactivated successfully");
-                }
-                return Response<string>.Fail("department does not exist");
-            }
-            return Response<string>.Fail("Course does not exist");
-        }
-
-        public async Task<Response<IEnumerable<Course>>> GetDeparmentCoursesAsync(string departmentName)
+        public async Task<Response<IEnumerable<CourseDto>>> GetDeparmentCoursesAsync(string departmentName)
         {
             var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
-            if(department != null)
+            
+            if (department != null)
             {
-                var departmentCourses = department.Courses.ToList();
-                return Response<IEnumerable<Course>>.Success(departmentCourses, "Successful");
+                var departmentCourses = department.Courses.Where(x => x.IsActive = true);
+                var courses = _mapper.Map<IEnumerable<CourseDto>>(departmentCourses);
+                return Response<IEnumerable<CourseDto>>.Success(courses, "Successful");
             }
-            return Response<IEnumerable<Course>>.Fail("Department does not exit");
+            return Response<IEnumerable<CourseDto>>.Fail("Department does not exit");
         }
+
+        //public async Task<Response<string>> AddCourseToDepartmentAsync(string departmentName, string courseCode)
+        //{
+        //    var course = await _unitOfWork.Course.GetCourseByNameOrCourseCodeAsync(courseCode);
+        //    if (course != null)
+        //    {
+        //        var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
+
+        //        if(department != null)
+        //        {
+        //            department.Courses.Add(course);
+        //            _unitOfWork.Department.Update(department);
+        //            await _unitOfWork.SaveChangesAsync();
+        //            return Response<string>.Success(null, $"{course.Name} {(courseCode)} added successfully");
+        //        }
+        //        return Response<string>.Fail("department does not exist");
+        //    }
+        //    return Response<string>.Fail("Course does not exist");
+        //}
+
+        //public async Task<Response<string>> DeactivateDepartmentCourseAsycn(string departmentName, string courseCode)
+        //{
+        //    var course = await _unitOfWork.Course.GetCourseByNameOrCourseCodeAsync(courseCode);
+        //    if (course != null)
+        //    {
+        //        var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
+
+        //        if (department != null)
+        //        {
+        //            var readCourse = department.Courses.FirstOrDefault(x => x.CourseCode.ToLower().Trim() == courseCode.ToLower().Trim() ).IsActive = false;
+        //            _unitOfWork.Department.Update(department);
+        //            await _unitOfWork.SaveChangesAsync();
+        //            return Response<string>.Success(null, $"{course.Name} {(courseCode)} deactivated successfully");
+        //        }
+        //        return Response<string>.Fail("department does not exist");
+        //    }
+        //    return Response<string>.Fail("Course does not exist");
+        //}
     }
 }

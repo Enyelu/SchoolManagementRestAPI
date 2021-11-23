@@ -25,8 +25,12 @@ namespace Repository.Implementations
             var course = await _context.Courses
                                            .Include(x => x.Students)
                                            .Include(x => x.Department)
+                                           .Include(x => x.Faculty)
                                            .Include(x => x.Lecturers)
-                                           .FirstOrDefaultAsync(x => x.Name == searchTerm || x.CourseCode == searchTerm);
+                                           .ThenInclude(x => x.AppUser)
+                                           .ThenInclude(x => x.Address)
+                                           .FirstOrDefaultAsync(x => x.Name.Trim().ToLower() == searchTerm.Trim().ToLower()
+                                                           || x.CourseCode.Trim().ToLower() == searchTerm.Trim().ToLower());
             if (course != null) { return course; }
             
             return null;
