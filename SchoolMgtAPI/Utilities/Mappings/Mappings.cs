@@ -11,16 +11,15 @@ namespace Utilities.Mappings
         {
             //mapping for returning user details to view.
             CreateMap<Student, ReadStudentResponseDto>()
-                .ForMember(x => x.AppUserId, y => y.MapFrom(z => z.AppUserId))
                 .ForMember(x => x.RegistrationNumber, y => y.MapFrom(z => z.RegistrationNumber))
                 .ForMember(x => x.FullName, y => y.MapFrom(z => z.AppUser.FirstName + " " + z.AppUser.MiddleName + " " + z.AppUser.LastName))
                 .ForMember(x => x.Avatar, y => y.MapFrom(z => z.AppUser.Avatar))
                 .ForMember(x => x.IsActive, y => y.MapFrom(z => z.AppUser.IsActive))
                 .ForMember(x => x.BirthDate, y => y.MapFrom(z => z.AppUser.BirthDate))
+                .ForMember(x => x.Email, y => y.MapFrom(z => z.AppUser.Email))
                 .ForMember(x => x.DateCreated, y => y.MapFrom(z => z.AppUser.DateCreated))
                 .ForMember(x => x.Class, y => y.MapFrom(z => z.Class))
                 .ForMember(x => x.Level, y => y.MapFrom(z => z.Level))
-                .ForMember(x => x.Id, y => y.MapFrom(z => z.ClassAdviser.Lecturer.AppUserId))
                 .ForMember(x => x.Department, y => y.MapFrom(z => z.Department.Name))
                 .ForMember(x => x.Faculty, y => y.MapFrom(z => z.Faculty.Name))
                 .ForMember(x => x.StreetNumber, y => y.MapFrom(z => z.AppUser.Address.StreetNumber))
