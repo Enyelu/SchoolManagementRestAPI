@@ -69,9 +69,14 @@ namespace Repository.Implementations
         {
             var students = studentTable
                           .Include(x => x.AppUser)
-                          .Include(x => x.Department)
+                          .ThenInclude(x => x.Student)
+                          .ThenInclude(x => x.Department)
+                          .ThenInclude(x => x.Faculty)
+                          .Include(x => x.AppUser)
+                          .ThenInclude(x => x.Address)
                           .Include(x => x.Faculty)
-                          .Include(x => x.AppUser.Address)
+                          .ThenInclude(x => x.Departments)
+                          .Include(x => x.Department)
                           .Where(x => x.Level == studentsLevel && x.Faculty.Name.Trim().ToLower() == faculty.Trim().ToLower());
 
             if (students != null) { return await students.ToListAsync(); }
