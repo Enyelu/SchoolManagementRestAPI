@@ -61,7 +61,7 @@ namespace Services.Implementations
                         Attechments = null,
                         Body = $"<p> Dear {appUser.FirstName} \n Confirmation of your email is one click away <a href='{callbackUrl}'>click here</a> to continue</P>"
                     };
-
+                     
                     var result = await _mailService.SendMailAsync(mail);
 
                     if (result)
@@ -75,8 +75,9 @@ namespace Services.Implementations
                             Department = department,
                             Faculty = faculty,
                         };
-                        await _unitOfWork.Lecturer.AddAsync(newLecturer);
+                       
                         appUser.Lecturer = newLecturer;
+                        await _userManager.UpdateAsync(appUser);
                         await _unitOfWork.SaveChangesAsync();
                         transaction.Complete();
                         return Response<string>.Success(null, "Registration was successful");
@@ -90,7 +91,7 @@ namespace Services.Implementations
         public async Task<Response<LecturerResponseDto>> ReadLecturerDetailAsync(string lecturerEmail)
         {
             var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
-            
+
             if (lecturer != null)
             {
                 var mappedLecturer = _mapper.Map<LecturerResponseDto>(lecturer);
@@ -111,7 +112,7 @@ namespace Services.Implementations
                 _unitOfWork.Lecturer.Update(lecturer);
                 await _unitOfWork.SaveChangesAsync();
                 
-                return Response<string>.Success(null, $"Successfully added {responseCourse}");
+                return Response<string>.Success(null, $"Successfully assigned {responseCourse} to {lecturer.AppUser.Email}");
             }
             return Response<string>.Fail($"Unsuccessful. {responseCourse} was not added to {lecturer.AppUser.FirstName} with email: {lecturerEmail}.");
         }
@@ -154,7 +155,7 @@ namespace Services.Implementations
 
                 _unitOfWork.Lecturer.Update(lecturer);
                 await _unitOfWork.SaveChangesAsync();
-                return Response<string>.Success(null, $"{lecturer.AppUser.FirstName} {lecturer.AppUser.LastName} updated successfully");
+                return Response<string>.Success(null, $"Updated successfully successful");
             }
             return Response<string>.Fail($"Udate was unsuccessful. {lecturerEmail} does not exist");
         }

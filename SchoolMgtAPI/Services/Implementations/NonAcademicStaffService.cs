@@ -138,7 +138,7 @@ namespace Services.Implementations
                 var responseString = $"{readStaff.AppUser.FirstName} {readStaff.AppUser.LastName} was deactivated";
                 return Response<string>.Success(null, responseString);
             }
-            return Response<string>.Fail("Deactivation was unsuccessful");
+            return Response<string>.Fail($"Deactivation was unsuccessful. {staffEmail} does not exist");
         }
 
 

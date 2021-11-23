@@ -16,4 +16,4 @@ namespace Models
         public Faculty Faculty { get; set; }
         public ICollection<Course> Courses { get; set; }    
     }
-}
+} 

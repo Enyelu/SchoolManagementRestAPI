@@ -25,12 +25,7 @@ namespace SchoolMgtAPI.Controllers
         public async Task<IActionResult> AddDepartment(string departmentName, string facultyName)
         {
            var response  =  await _departmentService.AddDepartmentAsync(departmentName, facultyName);
-
-           if(response.Succeeded)
-           {
-                return StatusCode(201,response);
-           }
-            return BadRequest();
+           return StatusCode(response.StatusCode,response);
         }
 
         [HttpPatch("Deactivate")]
@@ -52,11 +47,11 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(response.StatusCode,response);
         }
 
-        [HttpPost("LecturerToDepartment")]
+        [HttpPatch("LecturerToDepartment")]
         public async Task<IActionResult> AddLecturerToDepartment(string lecturerEmail, string departmentName)
         {
             var response = await _departmentService.AddLecturerToDepartmentAsync(lecturerEmail, departmentName);
-            return StatusCode(response.StatusCode);
+            return StatusCode(response.StatusCode,response);
         }
 
         [HttpPatch("DeactivateLecturerFromDepartment")]
@@ -73,21 +68,21 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPost("CourseToDepartment")]
-        public async Task<IActionResult> AddCourseToDepartment(string departmentName, string courseCode)
-        {
-            var response = await _departmentService.AddCourseToDepartmentAsync(departmentName, courseCode);
-            return StatusCode(response.StatusCode, response);
-        }
+        //[HttpPost("CourseToDepartment")]
+        //public async Task<IActionResult> AddCourseToDepartment(string departmentName, string courseCode)
+        //{
+        //    var response = await _departmentService.AddCourseToDepartmentAsync(departmentName, courseCode);
+        //    return StatusCode(response.StatusCode, response);
+        //}
 
-        [HttpPatch("DeactivateDepartmentCourse")]
-        public async Task<IActionResult> DeactivateDepartmentCourse(string departmentName, string courseCode)
-        {
-            var response = await _departmentService.DeactivateDepartmentCourseAsycn(departmentName, courseCode);
-            return StatusCode(response.StatusCode, response);
-        }
+        //[HttpPatch("DeactivateDepartmentCourse")]
+        //public async Task<IActionResult> DeactivateDepartmentCourse(string departmentName, string courseCode)
+        //{
+        //    var response = await _departmentService.DeactivateDepartmentCourseAsycn(departmentName, courseCode);
+        //    return StatusCode(response.StatusCode, response);
+        //}
 
-        [HttpPost("GetDeparmentCourses")]
+        [HttpGet("GetDeparmentCourses")]
         public async Task<IActionResult> GetDeparmentCourses(string departmentName)
         {
             var response = await _departmentService.GetDeparmentCoursesAsync(departmentName);

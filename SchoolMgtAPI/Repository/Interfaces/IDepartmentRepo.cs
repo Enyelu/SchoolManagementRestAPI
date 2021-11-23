@@ -11,6 +11,6 @@ namespace Repository.Interfaces
     {
         Task<Department> GetDepartmentAsync(string departmentName);
         Task<IEnumerable<Department>> GetAllDepartmentDetailsAsync();
-        Task<IEnumerable<Department>> GetAllDepartmentAsync();
+        Task<IEnumerable<Department>> GetActiveDepartmentAsync();
     }
 }
