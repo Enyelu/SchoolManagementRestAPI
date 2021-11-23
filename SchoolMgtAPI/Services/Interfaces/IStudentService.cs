@@ -22,9 +22,9 @@ namespace Services.Interfaces
         Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentAsync();
         Task<Response<string>> DeactivateStudentAsync(string registrationNumber);
         Task<Response<string>> CheckStudentIsActiveAsync(string registrationNumber);
-        Task<Response<IEnumerable<Course>>> RegisterCoursesAsync(string studentId, ICollection<string> courses);
+        Task<Response<IEnumerable<string>>> RegisterCoursesAsync(string studentId, ICollection<string> courses);
         Task<Response<IEnumerable<string>>> RemoveCoursesAsync(string studentId, ICollection<string> courses);
-        Task<Response<IEnumerable<Course>>> ReadRegisteredCoursesAsync(string studentId);
+        Task<Response<IEnumerable<string>>> ReadRegisteredCoursesAsync(string studentId);
      }
 }
 
