@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using System.Threading.Tasks;
 using Utilities.Dtos;
@@ -39,7 +38,7 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateLecturerAsync(LecturerDto lecturerDto, string lecturerEmail)
+        public async Task<IActionResult> UpdateLecturerAsync(LecturerUpdateDto lecturerDto, string lecturerEmail)
         {
             var respose = await _lecturerService.UpdateLecturerAsync(lecturerDto, lecturerEmail);
             return StatusCode(respose.StatusCode, respose);

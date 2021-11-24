@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Utilities.Dtos
+﻿namespace Utilities.Dtos
 {
-    public class LecturerDto
+    public class LecturerUpdateDto
     {
         public string FirstName { get; set; }
         public string MiddleName { get; set; }

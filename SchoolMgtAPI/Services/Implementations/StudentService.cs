@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Models;
 using Models.Mail;
 using Services.Interfaces;
@@ -14,8 +16,6 @@ using System.Transactions;
 using Utilities.AppUnitOfWork;
 using Utilities.Dtos;
 using Utilities.GeneralResponse;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 
 namespace Services.Implementations
 {
@@ -116,73 +116,94 @@ namespace Services.Implementations
 
         public async Task<Response<ReadStudentResponseDto>> ReadStudentAsync(string resgitrationNumber)
         {
-            var response = await _unitOfWork.Student.GetStudentAsync(resgitrationNumber);
-            var studentDetail = _mapper.Map<ReadStudentResponseDto>(response);
-
-            if (studentDetail != null)
+            if(resgitrationNumber == string.Empty)
             {
-                return Response<ReadStudentResponseDto>.Success(studentDetail, "Student Found");
+                var response = await _unitOfWork.Student.GetStudentAsync(resgitrationNumber);
+                var studentDetail = _mapper.Map<ReadStudentResponseDto>(response);
+
+                if (studentDetail != null)
+                {
+                    return Response<ReadStudentResponseDto>.Success(studentDetail, "Student Found");
+                }
+                return Response<ReadStudentResponseDto>.Fail("Student not found");
             }
-            return Response<ReadStudentResponseDto>.Fail("Student not found");
+            return Response<ReadStudentResponseDto>.Fail("Field cannot be empty");
         }
 
         public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInALevelAsync(int studentsLevel)
         {
-            var students = await _unitOfWork.Student.GetAllStudentsInALevelAsync(studentsLevel);
-            var studentDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
+            if(studentsLevel.ToString() == string.Empty)
+            {
+                var students = await _unitOfWork.Student.GetAllStudentsInALevelAsync(studentsLevel);
+                var studentDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
 
-            return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentDetail, "Successful");
+                return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentDetail, "Successful");
+            }
+            return Response<IEnumerable<ReadStudentResponseDto>>.Fail("field cannot be empty");
         }
 
         public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInADepartmentInALevelAsync(int studentsLevel, string department)
         {
-            var students = await _unitOfWork.Student.GetAllStudentsInADepartmentInALevelAsync(studentsLevel, department);
-
-            if (students != null)
+            if(studentsLevel.ToString() == string.Empty || department == string.Empty)
             {
-                var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
-                return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
-            }
+                var students = await _unitOfWork.Student.GetAllStudentsInADepartmentInALevelAsync(studentsLevel, department);
 
-            return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
+                if (students != null)
+                {
+                    var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
+                    return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
+                }
+                return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
+            }
+            return Response<IEnumerable<ReadStudentResponseDto>>.Fail("field cannot be empty");
         }
 
         public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInAFacultyInALevelAsync(int studentsLevel, string faculty)
         {
-            var students = await _unitOfWork.Student.GetAllStudentsInAFacultyInALevelAsync(studentsLevel, faculty);
-
-            if (students != null)
+            if (studentsLevel.ToString() == string.Empty || faculty == string.Empty)
             {
-                var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
-                return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
-            }
+                var students = await _unitOfWork.Student.GetAllStudentsInAFacultyInALevelAsync(studentsLevel, faculty);
 
-            return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
+                if (students != null)
+                {
+                    var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
+                    return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
+                }
+                return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
+            }
+            return Response<IEnumerable<ReadStudentResponseDto>>.Fail("Student level or faculty name cannot be empty");
         }
 
         public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInDepartmentAsync(string department)
         {
-            var students = await _unitOfWork.Student.GetAllStudentsInDepartmentAsync(department);
-
-            if (students != null)
+            if(department == string.Empty)
             {
-                var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
-                return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
-            }
+                var students = await _unitOfWork.Student.GetAllStudentsInDepartmentAsync(department);
 
-            return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
+                if (students != null)
+                {
+                    var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
+                    return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
+                }
+                return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
+            }
+            return Response<IEnumerable<ReadStudentResponseDto>>.Fail("Field cannot be empty");
         }
 
         public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInFacultyAsync(string faculty)
         {
-            var students = await _unitOfWork.Student.GetAllStudentsInFacultyAsync(faculty);
-
-            if (students != null)
+            if(faculty == string.Empty)
             {
-                var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
-                return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
+                var students = await _unitOfWork.Student.GetAllStudentsInFacultyAsync(faculty);
+
+                if (students != null)
+                {
+                    var studentsDetail = _mapper.Map<IEnumerable<ReadStudentResponseDto>>(students);
+                    return Response<IEnumerable<ReadStudentResponseDto>>.Success(studentsDetail, "Successful");
+                }
+                return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
             }
-            return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
+           return Response<IEnumerable<ReadStudentResponseDto>>.Fail("Field cannot be empty");
         }
 
         public async Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentAsync()
@@ -199,31 +220,39 @@ namespace Services.Implementations
 
         public async Task<Response<string>> DeactivateStudentAsync(string registrationNumber)
         {
-            var student = await _unitOfWork.Student.GetStudentAsync(registrationNumber);
-
-            if (student != null)
+            if(registrationNumber == string.Empty)
             {
-                student.AppUser.IsActive = false;
-                student.AppUser.DateModified = DateTime.UtcNow.ToString();
-                _unitOfWork.Student.Update(student);
-                await _unitOfWork.SaveChangesAsync();
-                return Response<string>.Success(null, "Student deactivated successfully");
+                var student = await _unitOfWork.Student.GetStudentAsync(registrationNumber);
+
+                if (student != null)
+                {
+                    student.AppUser.IsActive = false;
+                    student.AppUser.DateModified = DateTime.UtcNow.ToString();
+                    _unitOfWork.Student.Update(student);
+                    await _unitOfWork.SaveChangesAsync();
+                    return Response<string>.Success(null, "Student deactivated successfully");
+                }
+                return Response<string>.Fail("Student not found");
             }
-            return Response<string>.Fail("Student not found");
+            return Response<string>.Fail("Field cannot be empty");
         }
         public async Task<Response<string>> CheckStudentIsActiveAsync(string registrationNumber)
         {
-            var student = await _unitOfWork.Student.GetStudentAsync(registrationNumber);
-
-            if (student != null)
+            if (registrationNumber == string.Empty)
             {
-                var studentStatus = student.AppUser.IsActive;
-                if(studentStatus)
+                var student = await _unitOfWork.Student.GetStudentAsync(registrationNumber);
+
+                if (student != null)
                 {
-                    return Response<string>.Success(null, "Student is active");
+                    var studentStatus = student.AppUser.IsActive;
+                    if (studentStatus)
+                    {
+                        return Response<string>.Success(null, "Student is active");
+                    }
                 }
+                return Response<string>.Fail("Student is not active or registration number is incorrect");
             }
-            return Response<string>.Fail("Student is not active or registration number is incorrect");
+            return Response<string>.Fail("Field cannot be empty");
         }
 
         public async Task<Response<IEnumerable<string>>> RegisterCoursesAsync(string studentId, ICollection<string> courses)
@@ -257,7 +286,6 @@ namespace Services.Implementations
 
         public async Task<Response<IEnumerable<string>>> RemoveCoursesAsync(string studentId, ICollection<string> courses)
         {
-
             var student = await _unitOfWork.Student.GetStudentAsync(null, studentId);
             var registeredCourses = student.Courses;
 
