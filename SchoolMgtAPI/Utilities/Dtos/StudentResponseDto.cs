@@ -1,13 +1,6 @@
-﻿using Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Utilities.Dtos
+﻿namespace Utilities.Dtos
 {
-    public class StudentModel
+    public class StudentResponseDto
     {
         public string RegistrationNumber { get; set; }
         public int Class { get; set; } 

@@ -1,10 +1,11 @@
-﻿using Data;
-using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Implementations;
 using Services.Interfaces;
+using Utilities.AppFluentValidation;
 using Utilities.AppUnitOfWork;
+using Utilities.Dtos;
 
 namespace SchoolMgtAPI.ExtensionMethods
 {
@@ -23,6 +24,16 @@ namespace SchoolMgtAPI.ExtensionMethods
             services.AddTransient<INonAcademicStaffService, NonAcademicStaffService>();
             services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<IAddressService, AddressService>();
+
+            services.AddTransient<IValidator<CourseDto>, CourseValidator>();
+            services.AddTransient<IValidator<CourseUpdateDto>, CourseUpdateValidator>();
+            services.AddTransient<IValidator<LecturerUpdateDto>, LecturerUpdateValidator>();
+            services.AddTransient<IValidator<NonAcademicStaffUpdateDto>, NonAcademicStaffUpdateValidator>();
+
+            services.AddTransient <IValidator<RegisterLecturerDto>, RegisterLecturerValidator>();
+            services.AddTransient<IValidator<RegisterNonAcademicStaffDto>, RegisterNonAcademicStaffValidator>();
+            services.AddTransient <IValidator<RegisterStudentDto>, RegisterStudentValidator>();
+            services.AddTransient <IValidator <UpdateAddressDto>, UpdateAddressValidator>();
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Utilities.Mappings
             CreateMap<Course, CourseDto>();
                
             //mapping  for course lecturers details
-            CreateMap<Lecturer, LecturerModel>()
+            CreateMap<Lecturer, LecturerResponseModel>()
                     .ForMember(x => x.Avatar, y => y.MapFrom(z => z.AppUser.Avatar))
                     .ForMember(x => x.IsActive, y => y.MapFrom(z => z.AppUser.IsActive))
                     .ForMember(x => x.BirthDate, y => y.MapFrom(z => z.AppUser.BirthDate))
@@ -46,7 +46,7 @@ namespace Utilities.Mappings
                     .ForMember(x => x.Country, y => y.MapFrom(z => z.AppUser.Address.Country)); 
 
             //mapping for course students details
-            CreateMap<Student, StudentModel>()
+            CreateMap<Student, StudentResponseDto>()
                     .ForMember(x => x.Class, y => y.MapFrom(z => z.Class))
                     .ForMember(x => x.RegistrationNumber, y => y.MapFrom(z => z.RegistrationNumber))
                     .ForMember(x => x.Level, y => y.MapFrom(z => z.Level))

@@ -1,4 +1,5 @@
 using Data;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -33,6 +34,13 @@ namespace SchoolMgtAPI
             services.InjectServices(Configuration);
             services.ConfigureEmailService(Configuration);
             services.AddControllers();
+
+            services.AddMvc().AddFluentValidation(fv => {
+                fv.DisableDataAnnotationsValidation = true;
+                fv.RegisterValidatorsFromAssemblyContaining<Startup>();
+                fv.ImplicitlyValidateChildProperties = true;
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SchoolMgtAPI", Version = "v1" });

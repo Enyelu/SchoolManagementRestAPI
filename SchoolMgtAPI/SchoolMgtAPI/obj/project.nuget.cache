@@ -1,12 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "IG75YCWMz9BjlzR3HBNdOX724mziksNP/zfHacAR+lMKyEZ76eXXz5VIfvdrG+r3B8IVX6tKv+RCNE5rw+kPQQ==",
+  "dgSpecHash": "jEO8bqPStmSyGyZ8jrCrm1vS6XhNuLmAZ5Vt9xSC9kAQnUZd3/xmrIlX4QrFci2Zbibzgp9zSUe1lxcykIQYbw==",
   "success": true,
   "projectFilePath": "C:\\Users\\hp\\Documents\\PersonalProjects\\SchoolMgtAPI\\SchoolMgtAPI\\SchoolMgtAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\hp\\.nuget\\packages\\automapper\\10.1.1\\automapper.10.1.1.nupkg.sha512",
     "C:\\Users\\hp\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.1.1\\automapper.extensions.microsoft.dependencyinjection.8.1.1.nupkg.sha512",
     "C:\\Users\\hp\\.nuget\\packages\\fluentvalidation\\10.3.4\\fluentvalidation.10.3.4.nupkg.sha512",
+    "C:\\Users\\hp\\.nuget\\packages\\fluentvalidation.aspnetcore\\10.3.4\\fluentvalidation.aspnetcore.10.3.4.nupkg.sha512",
+    "C:\\Users\\hp\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\10.3.4\\fluentvalidation.dependencyinjectionextensions.10.3.4.nupkg.sha512",
     "C:\\Users\\hp\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\hp\\.nuget\\packages\\mailkit\\2.6.0\\mailkit.2.6.0.nupkg.sha512",
     "C:\\Users\\hp\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\5.0.12\\microsoft.aspnetcore.authentication.jwtbearer.5.0.12.nupkg.sha512",

@@ -95,74 +95,90 @@ namespace Services.Implementations
 
         public async Task<Response<LecturerResponseDto>> ReadLecturerDetailAsync(string lecturerEmail)
         {
-            var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
-
-            if (lecturer != null)
+            if(lecturerEmail == string.Empty)
             {
-                var mappedLecturer = _mapper.Map<LecturerResponseDto>(lecturer);
-                return Response<LecturerResponseDto>.Success(mappedLecturer, "Successful");
+                var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
+
+                if (lecturer != null)
+                {
+                    var mappedLecturer = _mapper.Map<LecturerResponseDto>(lecturer);
+                    return Response<LecturerResponseDto>.Success(mappedLecturer, "Successful");
+                }
+                return Response<LecturerResponseDto>.Fail("Unsuccessful. Lecturer not found");
             }
-            return Response<LecturerResponseDto>.Fail("Unsuccessful. Lecturer not found");
+            return Response<LecturerResponseDto>.Fail("Field cannot be empty");
         }
 
         public async Task<Response<string>> AssignCourseToLecturerAsync(string lecturerEmail, string courseName, string courseCode)
         {
-            var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
-            var course = await _unitOfWork.Course.GetCourseByNameOrCourseCodeAsync(courseCode, courseName);
-            var responseCourse = courseName ?? courseCode;
-
-            if (lecturer != null)
+            if(lecturerEmail == string.Empty || courseName == string.Empty || courseCode == string.Empty)
             {
-                lecturer.Courses.Add(course);
-                _unitOfWork.Lecturer.Update(lecturer);
-                await _unitOfWork.SaveChangesAsync();
-                
-                return Response<string>.Success(null, $"Successfully assigned {responseCourse} to {lecturer.AppUser.Email}");
+                var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
+                var course = await _unitOfWork.Course.GetCourseByNameOrCourseCodeAsync(courseCode, courseName);
+                var responseCourse = courseName ?? courseCode;
+
+                if (lecturer != null)
+                {
+                    lecturer.Courses.Add(course);
+                    _unitOfWork.Lecturer.Update(lecturer);
+                    await _unitOfWork.SaveChangesAsync();
+
+                    return Response<string>.Success(null, $"Successfully assigned {responseCourse} to {lecturer.AppUser.Email}");
+                }
+                return Response<string>.Fail($"Unsuccessful. {responseCourse} was not added to {lecturer.AppUser.FirstName} with email: {lecturerEmail}.");
             }
-            return Response<string>.Fail($"Unsuccessful. {responseCourse} was not added to {lecturer.AppUser.FirstName} with email: {lecturerEmail}.");
+            return Response<string>.Fail($"Field(s) cannot be empty");
         }
 
         public async Task<Response<string>> DeactivateLecturerAsync(string lecturerEmail)
         {
-            var lecturer = await _userManager.FindByEmailAsync(lecturerEmail);
-            
-            if(lecturer != null)
+            if(lecturerEmail == string.Empty)
             {
-                lecturer.IsActive = false;
-                lecturer.DateModified = DateTime.UtcNow.ToString();
-                var result = await _userManager.UpdateAsync(lecturer);
+                var lecturer = await _userManager.FindByEmailAsync(lecturerEmail);
 
-                if(result.Succeeded)
+                if (lecturer != null)
                 {
-                    await _unitOfWork.SaveChangesAsync();
-                    return Response<string>.Success(null, "Deactivation was successful");
+                    lecturer.IsActive = false;
+                    lecturer.DateModified = DateTime.UtcNow.ToString();
+                    var result = await _userManager.UpdateAsync(lecturer);
+
+                    if (result.Succeeded)
+                    {
+                        await _unitOfWork.SaveChangesAsync();
+                        return Response<string>.Success(null, "Deactivation was successful");
+                    }
+                    return Response<string>.Fail("an error occured while attempting to Deactivate lecturer");
                 }
-                return Response<string>.Fail("an error occured while attempting to Deactivate lecturer");
+                return Response<string>.Fail("Unsuccessful. Lecturer not found");
             }
-            return Response<string>.Fail("Unsuccessful. Lecturer not found");
+            return Response<string>.Fail("Field cannot be empty");
         }
 
-        public async Task<Response<string>> UpdateLecturerAsync(LecturerDto lecturerDto, string lecturerEmail)
+        public async Task<Response<string>> UpdateLecturerAsync(LecturerUpdateDto lecturerDto, string lecturerEmail)
         {
-            var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
-
-            if(lecturer != null)
+            if (lecturerEmail == string.Empty)
             {
-                lecturer.AppUser.FirstName = lecturerDto.FirstName;
-                lecturer.AppUser.MiddleName = lecturerDto.MiddleName;
-                lecturer.AppUser.LastName = lecturerDto.LastName;
-                lecturer.AppUser.PhoneNumber = lecturerDto.PhoneNumber;
-                lecturer.AppUser.Address.StreetNumber = lecturerDto.StreetNumber;
-                lecturer.AppUser.Address.City = lecturerDto.City;
-                lecturer.AppUser.Address.State = lecturerDto.State;
-                lecturer.AppUser.Address.Country = lecturerDto.Country;
-                lecturer.AppUser.DateModified = DateTime.UtcNow.ToString();
+                var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
 
-                _unitOfWork.Lecturer.Update(lecturer);
-                await _unitOfWork.SaveChangesAsync();
-                return Response<string>.Success(null, $"Updated successfully successful");
+                if (lecturer != null)
+                {
+                    lecturer.AppUser.FirstName = lecturerDto.FirstName;
+                    lecturer.AppUser.MiddleName = lecturerDto.MiddleName;
+                    lecturer.AppUser.LastName = lecturerDto.LastName;
+                    lecturer.AppUser.PhoneNumber = lecturerDto.PhoneNumber;
+                    lecturer.AppUser.Address.StreetNumber = lecturerDto.StreetNumber;
+                    lecturer.AppUser.Address.City = lecturerDto.City;
+                    lecturer.AppUser.Address.State = lecturerDto.State;
+                    lecturer.AppUser.Address.Country = lecturerDto.Country;
+                    lecturer.AppUser.DateModified = DateTime.UtcNow.ToString();
+
+                    _unitOfWork.Lecturer.Update(lecturer);
+                    await _unitOfWork.SaveChangesAsync();
+                    return Response<string>.Success(null, $"Updated successfully successful");
+                }
+                return Response<string>.Fail($"Udate was unsuccessful. {lecturerEmail} does not exist");
             }
-            return Response<string>.Fail($"Udate was unsuccessful. {lecturerEmail} does not exist");
+            return Response<string>.Fail("Field cannot be empty");
         }
     }
 }

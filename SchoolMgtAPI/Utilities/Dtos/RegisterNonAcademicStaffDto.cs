@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Utilities.Dtos
+﻿namespace Utilities.Dtos
 {
     public class RegisterNonAcademicStaffDto
     {
@@ -20,8 +14,6 @@ namespace Utilities.Dtos
         public string Password { get; set; }
         public string PhoneNumber { get; set; }
         public string BirthDate { get; set; }
-        public string DateCreated { get; set; }
-        public string DateModified { get; set; }
         public string DepartmentName { get; set; }
         public string FacultyName { get; set; }
         public string StreetNumber { get; set; }
