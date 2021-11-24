@@ -30,7 +30,6 @@ namespace Seeder
                     State = "Imo",
                     Country = "Nigeria"
                 };
-                //await dbContext.Addresses.AddAsync(address);
 
                 var user = new AppUser
                 {

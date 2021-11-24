@@ -1,7 +1,4 @@
-﻿using Models;
-using System.Collections.Generic;
-
-namespace Utilities.Dtos
+﻿namespace Utilities.Dtos
 {
     public class ReadDepartmentDto
     { 
