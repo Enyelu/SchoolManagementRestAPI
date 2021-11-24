@@ -98,14 +98,18 @@ namespace Services.Implementations
 
         public async Task<Response<NonAcademicStaffResponseDto>> ReadNonAcademicStaffAsync(string staffEmail)
         {
-            var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(staffEmail);
-            var staff = _mapper.Map<NonAcademicStaffResponseDto>(readStaff);
-
-            if(staff != null)
+            if(staffEmail == string.Empty)
             {
-                return Response<NonAcademicStaffResponseDto>.Success(staff, "Successful");
+                var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(staffEmail);
+                var staff = _mapper.Map<NonAcademicStaffResponseDto>(readStaff);
+
+                if (staff != null)
+                {
+                    return Response<NonAcademicStaffResponseDto>.Success(staff, "Successful");
+                }
+                return Response<NonAcademicStaffResponseDto>.Fail("Unsuccessful. Staff does not exist");
             }
-            return Response<NonAcademicStaffResponseDto>.Fail("Unsuccessful. Staff does not exist");
+            return Response<NonAcademicStaffResponseDto>.Fail("Field cannot be empty");
         }
 
         public async Task<Response<IEnumerable<NonAcademicStaffResponseDto>>> ReadAllNonAcademicStaffAsync()
@@ -131,43 +135,50 @@ namespace Services.Implementations
 
         public async Task<Response<string>> DeactivateNonAcademicStaffAsync(string staffEmail)
         {
-            var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(staffEmail);
-            
-            if (readStaff != null)
+            if (staffEmail == string.Empty)
             {
-                readStaff.AppUser.IsActive = false;
-                readStaff.AppUser.DateModified = DateTime.UtcNow.ToString();
-                _unitOfWork.NonAcademicStaff.Update(readStaff);
-                await _unitOfWork.SaveChangesAsync();
-                
-                var responseString = $"{readStaff.AppUser.FirstName} {readStaff.AppUser.LastName} was deactivated";
-                return Response<string>.Success(null, responseString);
+                var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(staffEmail);
+
+                if (readStaff != null)
+                {
+                    readStaff.AppUser.IsActive = false;
+                    readStaff.AppUser.DateModified = DateTime.UtcNow.ToString();
+                    _unitOfWork.NonAcademicStaff.Update(readStaff);
+                    await _unitOfWork.SaveChangesAsync();
+
+                    var responseString = $"{readStaff.AppUser.FirstName} {readStaff.AppUser.LastName} was deactivated";
+                    return Response<string>.Success(null, responseString);
+                }
+                return Response<string>.Fail($"Deactivation was unsuccessful. {staffEmail} does not exist");
             }
-            return Response<string>.Fail($"Deactivation was unsuccessful. {staffEmail} does not exist");
+            return Response<string>.Fail("Field cannot be empty");
         }
 
 
-        public async Task<Response<string>> UpdateNonAcademicStaffAsync(NonAcademicStaffDto staff, string staffEmail)
+        public async Task<Response<string>> UpdateNonAcademicStaffAsync(NonAcademicStaffUpdateDto staff, string staffEmail)
         {
-            var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(staffEmail);
-
-
-            if (readStaff != null)
+            if(staffEmail == string.Empty)
             {
-                readStaff.AppUser.FirstName = staff.FirstName;
-                readStaff.AppUser.MiddleName = staff.MiddleName;
-                readStaff.AppUser.LastName = staff.LastName;
-                readStaff.AppUser.Address.StreetNumber = staff.StreetNumber ;
-                readStaff.AppUser.Address.City = staff.City;
-                readStaff.AppUser.Address.State = staff.State;
-                readStaff.AppUser.Address.Country = staff.Country;
-                readStaff.AppUser.DateModified = DateTime.UtcNow.ToString();
+                var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(staffEmail);
 
-                _unitOfWork.NonAcademicStaff.Update(readStaff);
-                await _unitOfWork.SaveChangesAsync();
-                return Response<string>.Success(null, $"Update was successful");
+                if (readStaff != null)
+                {
+                    readStaff.AppUser.FirstName = staff.FirstName;
+                    readStaff.AppUser.MiddleName = staff.MiddleName;
+                    readStaff.AppUser.LastName = staff.LastName;
+                    readStaff.AppUser.Address.StreetNumber = staff.StreetNumber;
+                    readStaff.AppUser.Address.City = staff.City;
+                    readStaff.AppUser.Address.State = staff.State;
+                    readStaff.AppUser.Address.Country = staff.Country;
+                    readStaff.AppUser.DateModified = DateTime.UtcNow.ToString();
+
+                    _unitOfWork.NonAcademicStaff.Update(readStaff);
+                    await _unitOfWork.SaveChangesAsync();
+                    return Response<string>.Success(null, $"Update was successful");
+                }
+                return Response<string>.Fail($"Update was unsuccessful. {staffEmail} does not exist");
             }
-            return Response<string>.Fail($"Update was unsuccessful. {staffEmail} does not exist");
+            return Response<string>.Fail("Field cannot be empty");
         }
     }
 }

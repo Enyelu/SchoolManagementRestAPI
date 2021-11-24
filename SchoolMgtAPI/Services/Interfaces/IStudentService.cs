@@ -1,15 +1,11 @@
-﻿using Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Dtos;
 using Utilities.GeneralResponse;
 
 namespace Services.Interfaces
 {
-     public interface IStudentService
+    public interface IStudentService
      {
         Task<Response<string>> RegisterStudentAsync(RegisterStudentDto student);
         Task<bool> ConfirmStudentEmailAsync(string email, string token);
