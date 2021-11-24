@@ -7,7 +7,6 @@ using Models.Mail;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +14,8 @@ using System.Transactions;
 using Utilities.AppUnitOfWork;
 using Utilities.Dtos;
 using Utilities.GeneralResponse;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Services.Implementations
 {
@@ -26,8 +27,10 @@ namespace Services.Implementations
         private readonly IConfiguration _configuration;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly string baseUrl;
 
-        public StudentService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager, IConfiguration configuration, IPasswordService passwordService, IMailService mailService)
+        public StudentService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager, IConfiguration configuration, 
+                              IPasswordService passwordService, IMailService mailService, IWebHostEnvironment env)
         {
             _userManager = userManager;
             _configuration = configuration;
@@ -35,6 +38,7 @@ namespace Services.Implementations
             _passwordService = passwordService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            baseUrl = env.IsDevelopment() ? _configuration["AppUrl"] : _configuration["HerokuUrl"];
         } 
 
         public async Task<Response<string>> RegisterStudentAsync(RegisterStudentDto student)
@@ -59,7 +63,7 @@ namespace Services.Implementations
                     var encodedEmailToken = Encoding.UTF8.GetBytes(emailToken);
                     var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-                    var callbackUrl = $"{_configuration["AppUrl"]}/api/Student/ConfirmStudentEmail?email={appUser.Email}&token={validEmailToken}";
+                    var callbackUrl = $"{baseUrl}/api/Student/ConfirmStudentEmail?email={appUser.Email}&token={validEmailToken}";
 
                     var mail = new EmailRequest()
                     {

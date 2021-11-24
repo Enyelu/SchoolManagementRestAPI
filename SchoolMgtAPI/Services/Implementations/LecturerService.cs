@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Models;
 using Models.Mail;
 using Services.Interfaces;
@@ -22,13 +24,16 @@ namespace Services.Implementations
         private readonly IConfiguration _configuration;
         private readonly IMailService _mailService;
         private readonly IMapper _mapper;
-        public LecturerService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IMapper mapper, IConfiguration configuration, IMailService mailService)
+        private readonly string baseUrl;
+        public LecturerService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IMapper mapper, 
+                               IConfiguration configuration, IMailService mailService, IWebHostEnvironment env)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _configuration = configuration;
             _mailService = mailService;
             _mapper = mapper;
+            baseUrl = env.IsDevelopment() ? _configuration["AppUrl"] : _configuration["HerokuUrl"];
         }
 
         public async Task<Response<string>> RegisterLecturerAsync(RegisterLecturerDto lecturerDto)
@@ -52,7 +57,7 @@ namespace Services.Implementations
                     var encodedEmailToken = Encoding.UTF8.GetBytes(emailToken);
                     var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-                    var callbackUrl = $"{_configuration["appURL"]}/api/Student/ConfirmStudentEmail?email={appUser.Email}&token={validEmailToken}";
+                    var callbackUrl = $"{baseUrl}/api/Student/ConfirmStudentEmail?email={appUser.Email}&token={validEmailToken}";
 
                     var mail = new EmailRequest()
                     {
