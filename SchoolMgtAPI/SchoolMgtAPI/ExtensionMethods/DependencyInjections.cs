@@ -25,15 +25,27 @@ namespace SchoolMgtAPI.ExtensionMethods
             services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<IAddressService, AddressService>();
 
+
             services.AddTransient<IValidator<CourseDto>, CourseValidator>();
             services.AddTransient<IValidator<CourseUpdateDto>, CourseUpdateValidator>();
             services.AddTransient<IValidator<LecturerUpdateDto>, LecturerUpdateValidator>();
             services.AddTransient<IValidator<NonAcademicStaffUpdateDto>, NonAcademicStaffUpdateValidator>();
-
             services.AddTransient <IValidator<RegisterLecturerDto>, RegisterLecturerValidator>();
             services.AddTransient<IValidator<RegisterNonAcademicStaffDto>, RegisterNonAcademicStaffValidator>();
             services.AddTransient <IValidator<RegisterStudentDto>, RegisterStudentValidator>();
             services.AddTransient <IValidator <UpdateAddressDto>, UpdateAddressValidator>();
+            services.AddTransient<IValidator<DepartmentRequestDto>, DepartmentRequestValidation>();
+            services.AddTransient<IValidator<NameDto>, NameValidator>();
+            services.AddTransient<IValidator<EmailRequestDto>, EmailRequestValidator>();
+            services.AddTransient<IValidator<AddLecturerRequestDto>, AddLecturerRequestValidator>();
+            services.AddTransient<IValidator<RegistrationNumberDto>, RegistrationNumberValidator>();
+            services.AddTransient<IValidator<ReadFacultyStudentsDto>, ReadFacultyStudentsValidator>();
+            services.AddTransient<IValidator<ReadDepartmentsStudentDto>, ReadDepartmentStudentsValidator>();
+            services.AddTransient<IValidator<LevelDto>, LevelValidator>();
+            services.AddTransient<IValidator<LoginDto>, LoginValidator>();
+            services.AddTransient<IValidator<AssignCourseDto>, AssignCourseValidator>();
+            services.AddTransient<IValidator<ReadClassAdviserDto>, ReadClassAdviserValidator>();
+            services.AddTransient<IValidator<AssignClassAdviserDto>, AssignClassAdviserValidator>();
         }
     }
 }

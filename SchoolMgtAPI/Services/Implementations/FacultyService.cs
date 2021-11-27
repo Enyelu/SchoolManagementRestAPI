@@ -21,45 +21,35 @@ namespace Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<Response<string>>AddFaculty(string facultyName)
+        public async Task<Response<string>>AddFaculty(NameDto requestDto)
         {
-            if(facultyName == string.Empty)
-            {
-                var checkFaculty = await _unitOfWork.Faculty.GetFacultyAsync(facultyName);
+            var checkFaculty = await _unitOfWork.Faculty.GetFacultyAsync(requestDto.Name);
 
-                if (checkFaculty == null)
-                {
-                    var faculty = FacultyMap.FacultyMapping(facultyName);
-                    await _unitOfWork.Faculty.AddAsync(faculty);
-                    await _unitOfWork.SaveChangesAsync();
-                    return Response<string>.Success(facultyName, "Added successfully");
-                }
-                return Response<string>.Fail($"Failed. Faculty with name: {facultyName} already exist");
+            if (checkFaculty == null)
+            {
+                var faculty = FacultyMap.FacultyMapping(requestDto.Name);
+                await _unitOfWork.Faculty.AddAsync(faculty);
+                await _unitOfWork.SaveChangesAsync();
+                return Response<string>.Success(requestDto.Name, "Added successfully");
             }
-            return Response<string>.Fail($"FAculty name cannot be empty");
+            return Response<string>.Fail($"Failed. Faculty with name: {requestDto.Name} already exist");
         }
 
-        public async Task<Response<string>> DeactivateFacultyAsync(string facultyName)
+        public async Task<Response<string>> DeactivateFacultyAsync(NameDto requestDto)
         {
-            if (facultyName == string.Empty)
+            var faculty = await _unitOfWork.Faculty.GetFacultyAsync(requestDto.Name);
+            if (faculty != null)
             {
-                var faculty = await _unitOfWork.Faculty.GetFacultyAsync(facultyName);
-                if (faculty != null)
-                {
-                    faculty.IsActive = false;
-                    await _unitOfWork.SaveChangesAsync();
-                    return Response<string>.Success(facultyName, "Deactivated successfully");
-                }
-                return Response<string>.Fail($"{facultyName} not a faculty");
+                faculty.IsActive = false;
+                await _unitOfWork.SaveChangesAsync();
+                return Response<string>.Success(requestDto.Name, "Deactivated successfully");
             }
-            return Response<string>.Fail($"FAculty name cannot be empty");
+            return Response<string>.Fail($"{requestDto} not a faculty");
         }
 
-        public async Task<Response<IEnumerable<FacultyDepartmentsResponseDto>>> ReadDepartmentsInFacultyAsync(string facultyName)
+        public async Task<Response<IEnumerable<FacultyDepartmentsResponseDto>>> ReadDepartmentsInFacultyAsync(NameDto requestDto)
         {
-            if (facultyName == string.Empty)
-            {
-                var faculty = await _unitOfWork.Faculty.GetFacultyAsync(facultyName);
+                var faculty = await _unitOfWork.Faculty.GetFacultyAsync(requestDto.Name);
 
                 if (faculty != null)
                 {
@@ -68,41 +58,30 @@ namespace Services.Implementations
                     return Response<IEnumerable<FacultyDepartmentsResponseDto>>.Success(trueResult, "Successfully");
                 }
                 return Response<IEnumerable<FacultyDepartmentsResponseDto>>.Fail("Unuccessfully.... Faculty does not exist");
-            }
-            return Response<IEnumerable<FacultyDepartmentsResponseDto>>.Fail($"FAculty name cannot be empty");
         }
 
-        public async Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadLecturersInFacultyAsync(string facultyName)
+        public async Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadLecturersInFacultyAsync(NameDto reuestDto)
         {
-            if (facultyName == string.Empty)
-            {
-                var faculty = await _unitOfWork.Faculty.GetFacultyAsync(facultyName);
+            var faculty = await _unitOfWork.Faculty.GetFacultyAsync(reuestDto.Name);
 
-                if (faculty != null)
-                {
-                    var result = _mapper.Map<IEnumerable<FacultyLecturerResponseDto>>(faculty.Lecturer);
-                    return Response<IEnumerable<FacultyLecturerResponseDto>>.Success(result, "Successfully");
-                }
-                return Response<IEnumerable<FacultyLecturerResponseDto>>.Fail("Unuccessfully.... Faculty does not exist");
+            if (faculty != null)
+            {
+                var result = _mapper.Map<IEnumerable<FacultyLecturerResponseDto>>(faculty.Lecturer);
+                return Response<IEnumerable<FacultyLecturerResponseDto>>.Success(result, "Successfully");
             }
-            return Response<IEnumerable<FacultyLecturerResponseDto>>.Fail($"FAculty name cannot be empty");
-            
+            return Response<IEnumerable<FacultyLecturerResponseDto>>.Fail("Unuccessfully.... Faculty does not exist");
         }
 
-        public async Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadNonAcademinStaffInFacultyAsync(string facultyName)
+        public async Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadNonAcademinStaffInFacultyAsync(NameDto requestDto)
         {
-            if (facultyName == string.Empty)
-            {
-                var faculty = await _unitOfWork.Faculty.GetFacultyAsync(facultyName);
+            var faculty = await _unitOfWork.Faculty.GetFacultyAsync(requestDto.Name);
 
-                if (faculty != null)
-                {
-                    var result = _mapper.Map<IEnumerable<FacultyLecturerResponseDto>>(faculty.NonAcademicStaff);
-                    return Response<IEnumerable<FacultyLecturerResponseDto>>.Success(result, "Successfully");
-                }
-                return Response<IEnumerable<FacultyLecturerResponseDto>>.Fail("Unuccessfully.... Faculty does not exist");
+            if (faculty != null)
+            {
+                var result = _mapper.Map<IEnumerable<FacultyLecturerResponseDto>>(faculty.NonAcademicStaff);
+                return Response<IEnumerable<FacultyLecturerResponseDto>>.Success(result, "Successfully");
             }
-            return Response<IEnumerable<FacultyLecturerResponseDto>>.Fail($"FAculty name cannot be empty");
+            return Response<IEnumerable<FacultyLecturerResponseDto>>.Fail("Unuccessfully.... Faculty does not exist");
         }
     }
 }

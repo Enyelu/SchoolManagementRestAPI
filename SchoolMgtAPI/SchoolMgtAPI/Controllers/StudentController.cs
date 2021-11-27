@@ -33,43 +33,36 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPost("ConfirmStudentEmail")]
-        public async Task<IActionResult> ConfirmStudentEmail(string email, string token)
-        {
-            var response = await _studentService.ConfirmStudentEmailAsync(email, token);
-            return Ok(response);
-        }
-
         [HttpGet("StudentsInALevel")]
-        public async Task<IActionResult> ReadAllStudentsInALevel(int level)
+        public async Task<IActionResult> ReadAllStudentsInALevel(LevelDto requestDto)
         {
-            var response = await _studentService.ReadAllStudentsInALevelAsync(level);
+            var response = await _studentService.ReadAllStudentsInALevelAsync(requestDto);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("StudentsInADepartmentInALevel")]
-        public async Task<IActionResult> ReadAllStudentsInADepartmentInALevel(int level, string department)
+        public async Task<IActionResult> ReadAllStudentsInADepartmentInALevel(ReadDepartmentsStudentDto studentDto)
         {
-            var response = await _studentService.ReadAllStudentsInADepartmentInALevelAsync(level, department);
+            var response = await _studentService.ReadAllStudentsInADepartmentInALevelAsync(studentDto);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("StudentsInAFacultyInALevel")]
-        public async Task<IActionResult> ReadAllStudentsInAFacultyInALevel(int level, string faculty)
+        public async Task<IActionResult> ReadAllStudentsInAFacultyInALevel(ReadFacultyStudentsDto studentsDto)
         {
-            var response = await _studentService.ReadAllStudentsInAFacultyInALevelAsync(level, faculty);
+            var response = await _studentService.ReadAllStudentsInAFacultyInALevelAsync(studentsDto);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("StudentsInADepartment")]
-        public async Task<IActionResult> ReadAllStudentsInDepartment(string department)
+        public async Task<IActionResult> ReadAllStudentsInDepartment(NameDto department)
         {
             var response = await _studentService.ReadAllStudentsInDepartmentAsync(department);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("StudentsInAFaculty")]
-        public async Task<IActionResult> ReadAllStudentsInFaculty(string faculty)
+        public async Task<IActionResult> ReadAllStudentsInFaculty(NameDto faculty)
         {
             var response = await _studentService.ReadAllStudentsInFacultyAsync(faculty);
             return StatusCode(response.StatusCode, response);
@@ -83,14 +76,14 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpPut("DeactivateStudent")]
-        public async Task<IActionResult> DeactivateStudent(string registrationNumber)
+        public async Task<IActionResult> DeactivateStudent(RegistrationNumberDto registrationNumber)
         {
             var response = await _studentService.DeactivateStudentAsync(registrationNumber);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("StudentIsActive")]
-        public async Task<IActionResult> CheckStudentIsActive(string registrationNumber)
+        public async Task<IActionResult> CheckStudentIsActive(RegistrationNumberDto registrationNumber)
         {
             var response = await _studentService.CheckStudentIsActiveAsync(registrationNumber);
             return StatusCode(response.StatusCode, response);

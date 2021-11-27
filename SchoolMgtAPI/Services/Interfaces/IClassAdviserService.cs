@@ -6,8 +6,8 @@ namespace Services.Interfaces
 {
     public interface IClassAdviserService
     {
-        Task<Response<ClassAdviserResponseDto>> ReadClassAdviserAsync(int level, string department);
-        Task<Response<string>> AssignClassAdviserAsync(string lecturerEmail, int level);
-        Task<Response<string>> DeactivateClassAdviserAsync(int level, string department);
+        Task<Response<ClassAdviserResponseDto>> ReadClassAdviserAsync(ReadClassAdviserDto requestDto);
+        Task<Response<string>> AssignClassAdviserAsync(AssignClassAdviserDto requestDto);
+        Task<Response<string>> DeactivateClassAdviserAsync(ReadClassAdviserDto requestDto);
     }
 }
