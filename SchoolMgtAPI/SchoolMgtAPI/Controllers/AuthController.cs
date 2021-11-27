@@ -16,11 +16,17 @@ namespace SchoolMgtAPI.Controllers
             _authService = authService;
         }
 
-        [HttpGet("ConfirmEmail")]
+        [HttpPost("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string email, string token)
         {
             var response = await _authService.ConfirmEmailAsync(email, token);
             return StatusCode(200, response);
         }
+
+        //[HttpPost("Login")]
+        //public async Task<IActionResult> Login()
+        //{
+
+        //}
     }
 }

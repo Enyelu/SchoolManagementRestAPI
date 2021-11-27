@@ -96,20 +96,16 @@ namespace Services.Implementations
             }
         }
 
-        public async Task<Response<NonAcademicStaffResponseDto>> ReadNonAcademicStaffAsync(string staffEmail)
+        public async Task<Response<NonAcademicStaffResponseDto>> ReadNonAcademicStaffAsync(EmailRequestDto requestDto)
         {
-            if(staffEmail == string.Empty)
-            {
-                var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(staffEmail);
-                var staff = _mapper.Map<NonAcademicStaffResponseDto>(readStaff);
+            var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(requestDto.Email);
+            var staff = _mapper.Map<NonAcademicStaffResponseDto>(readStaff);
 
-                if (staff != null)
-                {
-                    return Response<NonAcademicStaffResponseDto>.Success(staff, "Successful");
-                }
-                return Response<NonAcademicStaffResponseDto>.Fail("Unsuccessful. Staff does not exist");
+            if (staff != null)
+            {
+                return Response<NonAcademicStaffResponseDto>.Success(staff, "Successful");
             }
-            return Response<NonAcademicStaffResponseDto>.Fail("Field cannot be empty");
+            return Response<NonAcademicStaffResponseDto>.Fail("Unsuccessful. Staff does not exist");
         }
 
         public async Task<Response<IEnumerable<NonAcademicStaffResponseDto>>> ReadAllNonAcademicStaffAsync()
@@ -127,33 +123,27 @@ namespace Services.Implementations
                 if(readListOfStaff.Count().Equals(listOfStaff.Count()))
                 {
                     return Response<IEnumerable<NonAcademicStaffResponseDto>>.Success(listOfStaff, "Successful");
-
                 }
             }
             return Response<IEnumerable<NonAcademicStaffResponseDto>>.Fail("Unsuccessful. Try again....");
         }
 
-        public async Task<Response<string>> DeactivateNonAcademicStaffAsync(string staffEmail)
+        public async Task<Response<string>> DeactivateNonAcademicStaffAsync(EmailRequestDto requestDto)
         {
-            if (staffEmail == string.Empty)
+            var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(requestDto.Email);
+
+            if (readStaff != null)
             {
-                var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(staffEmail);
+                readStaff.AppUser.IsActive = false;
+                readStaff.AppUser.DateModified = DateTime.UtcNow.ToString();
+                _unitOfWork.NonAcademicStaff.Update(readStaff);
+                await _unitOfWork.SaveChangesAsync();
 
-                if (readStaff != null)
-                {
-                    readStaff.AppUser.IsActive = false;
-                    readStaff.AppUser.DateModified = DateTime.UtcNow.ToString();
-                    _unitOfWork.NonAcademicStaff.Update(readStaff);
-                    await _unitOfWork.SaveChangesAsync();
-
-                    var responseString = $"{readStaff.AppUser.FirstName} {readStaff.AppUser.LastName} was deactivated";
-                    return Response<string>.Success(null, responseString);
-                }
-                return Response<string>.Fail($"Deactivation was unsuccessful. {staffEmail} does not exist");
+                var responseString = $"{readStaff.AppUser.FirstName} {readStaff.AppUser.LastName} was deactivated";
+                return Response<string>.Success(null, responseString);
             }
-            return Response<string>.Fail("Field cannot be empty");
+            return Response<string>.Fail($"Deactivation was unsuccessful. {requestDto.Email} does not exist");
         }
-
 
         public async Task<Response<string>> UpdateNonAcademicStaffAsync(NonAcademicStaffUpdateDto staff, string staffEmail)
         {

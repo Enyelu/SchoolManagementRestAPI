@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using System.Threading.Tasks;
+using Utilities.Dtos;
 
 namespace SchoolMgtAPI.Controllers
 {
@@ -16,30 +17,30 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpPost("Faculty")]
-        public async Task<IActionResult> AddFaculty(string facultyName)
+        public async Task<IActionResult> AddFaculty(NameDto requestDto)
         {
-            var response = await _facultyService.AddFaculty( facultyName);
+            var response = await _facultyService.AddFaculty(requestDto);
             return StatusCode(response.StatusCode,response);
         }
 
         [HttpPatch("Deactivate")]
-        public async Task<IActionResult> DeactivateFaculty(string facultyName)
+        public async Task<IActionResult> DeactivateFaculty(NameDto requestDto)
         {
-            var response = await _facultyService.DeactivateFacultyAsync(facultyName);
+            var response = await _facultyService.DeactivateFacultyAsync(requestDto);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("AllDepartments")]
-        public async Task<IActionResult> ReadDepartmentsInFaculty(string facultyName)
+        public async Task<IActionResult> ReadDepartmentsInFaculty(NameDto requestDto)
         {
-            var response = await _facultyService.ReadDepartmentsInFacultyAsync(facultyName);
+            var response = await _facultyService.ReadDepartmentsInFacultyAsync(requestDto);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("AllLecturers")]
-        public async Task<IActionResult> ReadLecturersInFaculty(string facultyName)
+        public async Task<IActionResult> ReadLecturersInFaculty(NameDto requestDto)
         {
-            var response = await _facultyService.ReadLecturersInFacultyAsync(facultyName);
+            var response = await _facultyService.ReadLecturersInFacultyAsync(requestDto);
             return StatusCode(response.StatusCode, response);
         }
     }

@@ -7,10 +7,10 @@ namespace Services.Interfaces
 {
     public interface IFacultyService
     {
-        Task<Response<string>> AddFaculty(string facultyName);
-        Task<Response<string>> DeactivateFacultyAsync(string facultyName);
-        Task<Response<IEnumerable<FacultyDepartmentsResponseDto>>> ReadDepartmentsInFacultyAsync(string facultyName);
-        Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadLecturersInFacultyAsync(string facultyName);
-        Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadNonAcademinStaffInFacultyAsync(string facultyName);
+        Task<Response<string>> AddFaculty(NameDto requestDto);
+        Task<Response<string>> DeactivateFacultyAsync(NameDto requestDto);
+        Task<Response<IEnumerable<FacultyDepartmentsResponseDto>>> ReadDepartmentsInFacultyAsync(NameDto requestDto);
+        Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadLecturersInFacultyAsync(NameDto requestDto);
+        Task<Response<IEnumerable<FacultyLecturerResponseDto>>> ReadNonAcademinStaffInFacultyAsync(NameDto requestDto);
     }
 }
