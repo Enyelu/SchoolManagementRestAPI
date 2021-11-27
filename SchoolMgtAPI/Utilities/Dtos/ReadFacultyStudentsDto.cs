@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Utilities.Dtos
 {
-    public class DepartmentName
+    public class ReadFacultyStudentsDto
     {
+        public int Level { get; set; }
+        public string FacultyName { get; set; }
     }
 }

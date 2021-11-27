@@ -9,7 +9,6 @@ using Utilities.AppUnitOfWork;
 using Utilities.Dtos;
 using Utilities.GeneralResponse;
 using Utilities.Mappings;
-using System;
 
 namespace Services.Implementations
 {
@@ -26,46 +25,40 @@ namespace Services.Implementations
         }
 
 
-        public async Task<Response<string>> AddDepartmentAsync(string departmentName, string facultyName)
+        public async Task<Response<string>> AddDepartmentAsync(DepartmentRequestDto requestDto)
         {  
-            if(departmentName == string.Empty || facultyName == string.Empty)
+            var checkDepartment = await _unitOfWork.Department.GetDepartmentAsync(requestDto.DepartmentName);
+
+            if (checkDepartment == null)
             {
-                var checkDepartment = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
+                var department = DepartmentMap.DepartmentMapping(requestDto.DepartmentName);
+                var readFaculty = await _unitOfWork.Faculty.GetFacultyAsync(requestDto.FacultyName);
 
-                if (checkDepartment == null)
+                if (readFaculty != null)
                 {
-                    var department = DepartmentMap.DepartmentMapping(departmentName);
-                    var readFaculty = await _unitOfWork.Faculty.GetFacultyAsync(facultyName);
-
-                    if (readFaculty != null)
-                    {
-                        department.Faculty = readFaculty;
-                        await _unitOfWork.Department.AddAsync(department);
-                        await _unitOfWork.SaveChangesAsync();
-                        return Response<string>.Success(null, $"Successfully created {departmentName} department and added to {facultyName} faculty");
-                    }
-                    return Response<string>.Fail($"Unsuccessfully. Faculty: {facultyName}, does not exist");
+                    department.Faculty = readFaculty;
+                    await _unitOfWork.Department.AddAsync(department);
+                    await _unitOfWork.SaveChangesAsync();
+                    return Response<string>.Success(null, $"Successfully created {requestDto.DepartmentName} department and added to {requestDto.FacultyName} faculty");
                 }
-                return Response<string>.Fail($"Unsuccessfully. Department: {departmentName}, already exist");
+                return Response<string>.Fail($"Unsuccessfully. Faculty: {requestDto.FacultyName}, does not exist");
             }
-            return Response<string>.Fail($"Dapartment or faculty cannot be null");
+            return Response<string>.Fail($"Unsuccessfully. Department: {requestDto.DepartmentName}, already exist");
         }
 
-        public async Task<bool> DeactivateDepartmentAsync( string departmentName)
+        public async Task<bool> DeactivateDepartmentAsync( NameDto departmentName)
         {
-            if (!String.IsNullOrEmpty(departmentName))
-            {
-                var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
+          
+            var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName.Name);
 
-                if (department != null)
-                {
-                    department.IsActive = false;
-                    await _unitOfWork.SaveChangesAsync();
-                    return true;
-                }
-                return false;
+            if (department != null)
+            {
+                department.IsActive = false;
+                await _unitOfWork.SaveChangesAsync();
+                return true;
             }
             return false;
+        
         }
 
         public async Task<Response<IEnumerable<ReadDepartmentDto>>> ReadAllDepartmentsAsync()
@@ -81,12 +74,10 @@ namespace Services.Implementations
             return Response<IEnumerable<ReadDepartmentDto>>.Fail("UnSuccessful");
         }
 
-        public async Task<Response<string>> AddLecturerToDepartmentAsync(string lecturerEmail, string departmentName)
+        public async Task<Response<string>> AddLecturerToDepartmentAsync(AddLecturerRequestDto requestDto)
         {
-            if(lecturerEmail == string.Empty || departmentName == string.Empty)
-            {
-                var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
-                var ReadDepartment = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
+                var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(requestDto.LecturerEmail);
+                var ReadDepartment = await _unitOfWork.Department.GetDepartmentAsync(requestDto.DepartmentName);
 
                 if (lecturer != null)
                 {
@@ -95,68 +86,57 @@ namespace Services.Implementations
                         lecturer.Department = ReadDepartment;
                         _unitOfWork.Lecturer.Update(lecturer);
                         await _unitOfWork.SaveChangesAsync();
-                        return Response<string>.Success(null, $"Lecturer added successfully to {departmentName} department");
+                        return Response<string>.Success(null, $"Lecturer added successfully to {requestDto.DepartmentName} department");
                     }
                     return Response<string>.Fail("Department does not exist");
                 }
                 return Response<string>.Fail("Invalid Email");
-            }
-            return Response<string>.Fail("lecturer email or department cannot be null");
         }
 
-        public async Task<Response<string>> DeactivateLecturerFromDepartmentAsync(string lecturerEmail)
+        public async Task<Response<string>> DeactivateLecturerFromDepartmentAsync(EmailRequestDto lecturerEmail)
         {
-            if(lecturerEmail == string.Empty)
+            var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail.Email);
+            if (lecturer != null)
             {
-                var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
-                if (lecturer != null)
-                {
-                    lecturer.Department.IsActive = false;
-                    _unitOfWork.Lecturer.Update(lecturer);
-                    await _unitOfWork.SaveChangesAsync();
-                    return Response<string>.Success(null, "Lecturer deactivated successfully");
-                }
-                return Response<string>.Fail("Lecturer deactivation not successfully");
+                lecturer.Department.IsActive = false;
+                _unitOfWork.Lecturer.Update(lecturer);
+                await _unitOfWork.SaveChangesAsync();
+                return Response<string>.Success(null, "Lecturer deactivated successfully");
             }
-            return Response<string>.Fail("Lecturer email cannot be null");
+            return Response<string>.Fail("Lecturer deactivation not successfully");
         }
 
-        public async Task<Response<IEnumerable<LecturerResponseDto>>> GetAllLecturersInADepartmentAsync(string departmentName)
+        public async Task<Response<IEnumerable<LecturerResponseDto>>> GetAllLecturersInADepartmentAsync(NameDto departmentName)
         {
-            if(departmentName == string.Empty)
-            {
-                var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
-                var departmentLecturers = department.Lecturer.Where(x => x.AppUser.IsActive = true);
+            var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName.Name);
+            var departmentLecturers = department.Lecturer.Where(x => x.AppUser.IsActive = true);
 
-                if (department != null)
+            if (department != null)
+            {
+                if (departmentLecturers != null)
                 {
-                    if (departmentLecturers != null)
-                    {
-                        var lecturers = _mapper.Map<IEnumerable<LecturerResponseDto>>(departmentLecturers);
-                        return Response<IEnumerable<LecturerResponseDto>>.Success(lecturers, "successfully");
-                    }
-                    return Response<IEnumerable<LecturerResponseDto>>.Success(null, "No lecturer exist here at the moment");
+                    var lecturers = _mapper.Map<IEnumerable<LecturerResponseDto>>(departmentLecturers);
+                    return Response<IEnumerable<LecturerResponseDto>>.Success(lecturers, "successfully");
                 }
-                return Response<IEnumerable<LecturerResponseDto>>.Fail("department does not exist");
+                return Response<IEnumerable<LecturerResponseDto>>.Success(null, "No lecturer exist here at the moment");
             }
-            return Response<IEnumerable<LecturerResponseDto>>.Fail("department field cannot be empty");
+            return Response<IEnumerable<LecturerResponseDto>>.Fail("department does not exist");
+          
         }
 
-        public async Task<Response<IEnumerable<CourseDto>>> GetDeparmentCoursesAsync(string departmentName)
+        public async Task<Response<IEnumerable<CourseDto>>> GetDeparmentCoursesAsync(NameDto departmentName)
         {
-            if(departmentName == string.Empty)
-            {
-                var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
+           
+            var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName.Name);
 
-                if (department != null)
-                {
-                    var departmentCourses = department.Courses.Where(x => x.IsActive = true);
-                    var courses = _mapper.Map<IEnumerable<CourseDto>>(departmentCourses);
-                    return Response<IEnumerable<CourseDto>>.Success(courses, "Successful");
-                }
-                return Response<IEnumerable<CourseDto>>.Fail("Department does not exit");
+            if (department != null)
+            {
+                var departmentCourses = department.Courses.Where(x => x.IsActive = true);
+                var courses = _mapper.Map<IEnumerable<CourseDto>>(departmentCourses);
+                return Response<IEnumerable<CourseDto>>.Success(courses, "Successful");
             }
-            return Response<IEnumerable<CourseDto>>.Fail("department field cannot be empty");
+            return Response<IEnumerable<CourseDto>>.Fail("Department does not exit");
+           
         }
     }
 }

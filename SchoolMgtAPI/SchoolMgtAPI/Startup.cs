@@ -41,10 +41,8 @@ namespace SchoolMgtAPI
                 fv.ImplicitlyValidateChildProperties = true;
             });
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SchoolMgtAPI", Version = "v1" });
-            });
+            services.AddSwagger();
+           
 
             services.AddCors(c =>
             {
