@@ -34,6 +34,14 @@ namespace SchoolMgtAPI.ExtensionMethods
             services.AddTransient<IValidator<RegisterNonAcademicStaffDto>, RegisterNonAcademicStaffValidator>();
             services.AddTransient <IValidator<RegisterStudentDto>, RegisterStudentValidator>();
             services.AddTransient <IValidator <UpdateAddressDto>, UpdateAddressValidator>();
+            services.AddTransient<IValidator<DepartmentRequestDto>, DepartmentRequestValidation>();
+            services.AddTransient<IValidator<NameDto>, NameValidator>();
+            services.AddTransient<IValidator<EmailRequestDto>, EmailRequestValidator>();
+            services.AddTransient<IValidator<AddLecturerRequestDto>, AddLecturerRequestValidator>();
+            services.AddTransient<IValidator<RegistrationNumberDto>, RegistrationNumberValidator>();
+            services.AddTransient<IValidator<ReadFacultyStudentsDto>, ReadFacultyStudentsValidator>();
+            services.AddTransient<IValidator<ReadDepartmentsStudentDto>, ReadDepartmentStudentsValidator>();
+            services.AddTransient<IValidator<LevelDto>, LevelValidator>();
         }
     }
 }
