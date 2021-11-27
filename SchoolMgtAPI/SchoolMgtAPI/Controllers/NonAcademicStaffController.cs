@@ -7,10 +7,10 @@ namespace SchoolMgtAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NonAcademicStaffServiceController : ControllerBase
+    public class NonAcademicStaffController : ControllerBase
     {
         private readonly INonAcademicStaffService _nonAcademicStaffService;
-        public NonAcademicStaffServiceController(INonAcademicStaffService nonAcademicStaffService)
+        public NonAcademicStaffController(INonAcademicStaffService nonAcademicStaffService)
         {
             _nonAcademicStaffService = nonAcademicStaffService;
         }
@@ -29,10 +29,10 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("NonAcademicStaff")]
-        public async Task<IActionResult> ReadNonAcademicStaff(string staffEmail)
+        [HttpGet("{email}")]
+        public async Task<IActionResult> ReadNonAcademicStaff(string email)
         {
-            var response = await _nonAcademicStaffService.ReadNonAcademicStaffAsync(staffEmail);
+            var response = await _nonAcademicStaffService.ReadNonAcademicStaffAsync(email);
             return StatusCode(response.StatusCode, response);
         }
 

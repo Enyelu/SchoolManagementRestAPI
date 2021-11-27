@@ -23,10 +23,10 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(respose.StatusCode, respose);
         }
 
-        [HttpGet("Lecturer")]
-        public async Task<IActionResult> ReadLecturerDetail(string lecturerEmail)
+        [HttpGet("{email}")]
+        public async Task<IActionResult> ReadLecturerDetail(string email)
         {
-            var respose = await _lecturerService.ReadLecturerDetailAsync(lecturerEmail);
+            var respose = await _lecturerService.ReadLecturerDetailAsync(email);
             return StatusCode(respose.StatusCode, respose);
         }
 
@@ -44,7 +44,7 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(respose.StatusCode, respose);
         }
 
-        [HttpGet("AssignCourses")]
+        [HttpPost("AssignCourses")]
         public async Task<IActionResult> AssignCourseToLecturer(string lecturerEmail, string courseName, string courseCode)
         {
             var response = await _lecturerService.AssignCourseToLecturerAsync(lecturerEmail, courseName, courseCode);

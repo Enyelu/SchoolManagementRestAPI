@@ -6,7 +6,7 @@ using Utilities.Dtos;
 
 namespace SchoolMgtAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/")]
     [ApiController]
     public class CourseController : ControllerBase
     {
