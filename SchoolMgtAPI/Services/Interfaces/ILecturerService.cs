@@ -7,9 +7,9 @@ namespace Services.Interfaces
     public interface ILecturerService
     {
         Task<Response<string>> RegisterLecturerAsync(RegisterLecturerDto lecturerDto);
-        Task<Response<LecturerResponseDto>> ReadLecturerDetailAsync(string lecturerEmail);
-        Task<Response<string>> DeactivateLecturerAsync(string lecturerEmail);
+        Task<Response<LecturerResponseDto>> ReadLecturerDetailAsync(EmailRequestDto lecturerEmail);
+        Task<Response<string>> DeactivateLecturerAsync(EmailRequestDto lecturerEmail);
         Task<Response<string>> UpdateLecturerAsync(LecturerUpdateDto lecturerDto, string lecturerEmail);
-        Task<Response<string>> AssignCourseToLecturerAsync(string lecturerEmail, string courseName, string courseCode);
+        Task<Response<string>> AssignCourseToLecturerAsync(AssignCourseDto CourseDto);
     }
 }

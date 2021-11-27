@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using System.Threading.Tasks;
+using Utilities.Dtos;
 
 namespace SchoolMgtAPI.Controllers
 {
@@ -16,23 +17,23 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpGet("ClassAdviser")]
-        public async Task<IActionResult> ReadClassAdviser(int level, string department)
+        public async Task<IActionResult> ReadClassAdviser(ReadClassAdviserDto requestDto)
         {
-            var response = await _classAdviserService.ReadClassAdviserAsync(level, department);
+            var response = await _classAdviserService.ReadClassAdviserAsync(requestDto);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpPost("ClassAdviser")]
-        public async Task<IActionResult> AssignClassAdviser(string lecturerEmail, int level)
+        public async Task<IActionResult> AssignClassAdviser(AssignClassAdviserDto requestDto)
         {
-            var response = await _classAdviserService.AssignClassAdviserAsync(lecturerEmail, level);
+            var response = await _classAdviserService.AssignClassAdviserAsync(requestDto);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpPatch("DeactivateClassAdviser")]
-        public async Task<IActionResult> DeactivateClassAdviserAsync(int level, string department)
+        public async Task<IActionResult> DeactivateClassAdviserAsync(ReadClassAdviserDto requestDto)
         {
-            var response = await _classAdviserService.DeactivateClassAdviserAsync(level, department);
+            var response = await _classAdviserService.DeactivateClassAdviserAsync(requestDto);
             return StatusCode(response.StatusCode, response);
         }
     }
