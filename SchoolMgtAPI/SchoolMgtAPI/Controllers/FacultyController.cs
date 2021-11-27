@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SchoolMgtAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class FacultyController : ControllerBase
     {

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Services.Interfaces;
@@ -21,7 +20,6 @@ namespace SchoolMgtAPI.Controllers
         }
 
 
-
         [HttpPost("Admit")]
         public IActionResult AdmitStudent()
         {
@@ -35,7 +33,7 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("ConfirmStudentEmail")]
+        [HttpPost("ConfirmStudentEmail")]
         public async Task<IActionResult> ConfirmStudentEmail(string email, string token)
         {
             var response = await _studentService.ConfirmStudentEmailAsync(email, token);
@@ -98,7 +96,7 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        //[Authorize(Roles = Roles.Student)]
+       // [Authorize(Roles = Roles.Student)]
         [HttpPost("RegisterCourse")]
         public async Task<IActionResult> RegisterCourses(string studentId, ICollection<string> courses)
         {

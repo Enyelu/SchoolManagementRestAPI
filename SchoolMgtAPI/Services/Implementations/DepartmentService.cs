@@ -9,6 +9,7 @@ using Utilities.AppUnitOfWork;
 using Utilities.Dtos;
 using Utilities.GeneralResponse;
 using Utilities.Mappings;
+using System;
 
 namespace Services.Implementations
 {
@@ -52,7 +53,7 @@ namespace Services.Implementations
 
         public async Task<bool> DeactivateDepartmentAsync( string departmentName)
         {
-            if(departmentName == string.Empty)
+            if (!String.IsNullOrEmpty(departmentName))
             {
                 var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName);
 
