@@ -24,6 +24,7 @@ namespace SchoolMgtAPI.ExtensionMethods
             services.AddTransient<INonAcademicStaffService, NonAcademicStaffService>();
             services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<IAddressService, AddressService>();
+            services.AddTransient<IAuthService, AuthService>();
 
 
             services.AddTransient<IValidator<CourseDto>, CourseValidator>();
