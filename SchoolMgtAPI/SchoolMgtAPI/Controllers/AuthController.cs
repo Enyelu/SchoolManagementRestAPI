@@ -16,7 +16,7 @@ namespace SchoolMgtAPI.Controllers
             _authService = authService;
         }
 
-        [HttpPost("ConfirmEmail")]
+        [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string email, string token)
         {
             var response = await _authService.ConfirmEmailAsync(email, token);
