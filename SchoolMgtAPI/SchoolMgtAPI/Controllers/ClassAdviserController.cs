@@ -17,7 +17,7 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpGet("ClassAdviser")]
-        public async Task<IActionResult> ReadClassAdviser(ReadClassAdviserDto requestDto)
+        public async Task<IActionResult> ReadClassAdviser([FromQuery]ReadClassAdviserDto requestDto)
         {
             var response = await _classAdviserService.ReadClassAdviserAsync(requestDto);
             return StatusCode(response.StatusCode, response);

@@ -127,24 +127,6 @@ namespace Services.Implementations
             }
             return Response<IEnumerable<NonAcademicStaffResponseDto>>.Fail("Unsuccessful. Try again....");
         }
-
-        public async Task<Response<string>> DeactivateNonAcademicStaffAsync(EmailRequestDto requestDto)
-        {
-            var readStaff = await _unitOfWork.NonAcademicStaff.GetNonAcademicStaffAsync(requestDto.Email);
-
-            if (readStaff != null)
-            {
-                readStaff.AppUser.IsActive = false;
-                readStaff.AppUser.DateModified = DateTime.UtcNow.ToString();
-                _unitOfWork.NonAcademicStaff.Update(readStaff);
-                await _unitOfWork.SaveChangesAsync();
-
-                var responseString = $"{readStaff.AppUser.FirstName} {readStaff.AppUser.LastName} was deactivated";
-                return Response<string>.Success(null, responseString);
-            }
-            return Response<string>.Fail($"Deactivation was unsuccessful. {requestDto.Email} does not exist");
-        }
-
         public async Task<Response<string>> UpdateNonAcademicStaffAsync(NonAcademicStaffUpdateDto staff, string staffEmail)
         {
             if(staffEmail == string.Empty)

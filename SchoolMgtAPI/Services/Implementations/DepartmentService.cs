@@ -109,10 +109,10 @@ namespace Services.Implementations
         public async Task<Response<IEnumerable<LecturerResponseDto>>> GetAllLecturersInADepartmentAsync(NameDto departmentName)
         {
             var department = await _unitOfWork.Department.GetDepartmentAsync(departmentName.Name);
-            var departmentLecturers = department.Lecturer.Where(x => x.AppUser.IsActive = true);
 
             if (department != null)
             {
+                var departmentLecturers = department.Lecturer.Where(x => x.AppUser.IsActive = true);
                 if (departmentLecturers != null)
                 {
                     var lecturers = _mapper.Map<IEnumerable<LecturerResponseDto>>(departmentLecturers);
@@ -121,7 +121,6 @@ namespace Services.Implementations
                 return Response<IEnumerable<LecturerResponseDto>>.Success(null, "No lecturer exist here at the moment");
             }
             return Response<IEnumerable<LecturerResponseDto>>.Fail("department does not exist");
-          
         }
 
         public async Task<Response<IEnumerable<CourseDto>>> GetDeparmentCoursesAsync(NameDto departmentName)
