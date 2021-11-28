@@ -29,17 +29,10 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("{email}")]
-        public async Task<IActionResult> ReadNonAcademicStaff(EmailRequestDto email)
+        [HttpGet()]
+        public async Task<IActionResult> ReadNonAcademicStaff([FromQuery]EmailRequestDto email)
         {
             var response = await _nonAcademicStaffService.ReadNonAcademicStaffAsync(email);
-            return StatusCode(response.StatusCode, response);
-        }
-
-        [HttpPatch("Deactivate")]
-        public async Task<IActionResult> DeactivateNonAcademicStaff(EmailRequestDto email)
-        {
-            var response = await _nonAcademicStaffService.DeactivateNonAcademicStaffAsync(email);
             return StatusCode(response.StatusCode, response);
         }
 

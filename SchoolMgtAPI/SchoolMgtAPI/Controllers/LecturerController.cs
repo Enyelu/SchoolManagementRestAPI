@@ -23,17 +23,10 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(respose.StatusCode, respose);
         }
 
-        [HttpGet("{email}")]
-        public async Task<IActionResult> ReadLecturerDetail(EmailRequestDto email)
+        [HttpGet()]
+        public async Task<IActionResult> ReadLecturerDetail([FromQuery]EmailRequestDto email)
         {
             var respose = await _lecturerService.ReadLecturerDetailAsync(email);
-            return StatusCode(respose.StatusCode, respose);
-        }
-
-        [HttpPatch("Deactivate")]
-        public async Task<IActionResult> DeactivateLecturer(EmailRequestDto lecturerEmail)
-        {
-            var respose = await _lecturerService.DeactivateLecturerAsync(lecturerEmail);
             return StatusCode(respose.StatusCode, respose);
         }
 
@@ -44,7 +37,7 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(respose.StatusCode, respose);
         }
 
-        [HttpGet("AssignCourses")]
+        [HttpPost("AssignCourses")]
         public async Task<IActionResult> AssignCourseToLecturer(AssignCourseDto CourseDto)
         {
             var response = await _lecturerService.AssignCourseToLecturerAsync(CourseDto);

@@ -31,14 +31,14 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpGet("AllDepartments")]
-        public async Task<IActionResult> ReadDepartmentsInFaculty(NameDto requestDto)
+        public async Task<IActionResult> ReadDepartmentsInFaculty([FromQuery]NameDto requestDto)
         {
             var response = await _facultyService.ReadDepartmentsInFacultyAsync(requestDto);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("AllLecturers")]
-        public async Task<IActionResult> ReadLecturersInFaculty(NameDto requestDto)
+        public async Task<IActionResult> ReadLecturersInFaculty([FromQuery]NameDto requestDto)
         {
             var response = await _facultyService.ReadLecturersInFacultyAsync(requestDto);
             return StatusCode(response.StatusCode, response);

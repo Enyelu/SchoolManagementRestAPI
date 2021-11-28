@@ -187,23 +187,6 @@ namespace Services.Implementations
             }
             return Response<IEnumerable<ReadStudentResponseDto>>.Fail("An error occured. Try again");
         }
-
-        public async Task<Response<string>> DeactivateStudentAsync(RegistrationNumberDto Number)
-        {
-            
-            var student = await _unitOfWork.Student.GetStudentAsync(Number.RegistrationNumber);
-
-            if (student != null)
-            {
-                student.AppUser.IsActive = false;
-                student.AppUser.DateModified = DateTime.UtcNow.ToString();
-                _unitOfWork.Student.Update(student);
-                await _unitOfWork.SaveChangesAsync();
-                return Response<string>.Success(null, "Student deactivated successfully");
-            }
-            return Response<string>.Fail("Student not found");
-           
-        }
         public async Task<Response<string>> CheckStudentIsActiveAsync(RegistrationNumberDto Number)
         {
             var student = await _unitOfWork.Student.GetStudentAsync(Number.RegistrationNumber);
@@ -216,7 +199,7 @@ namespace Services.Implementations
                     return Response<string>.Success(null, "Student is active");
                 }
             }
-            return Response<string>.Fail("Student is not active or registration number is incorrect");
+            return Response<string>.Success(null,"Student is not active or registration number is incorrect");
         }
 
         public async Task<Response<IEnumerable<string>>> RegisterCoursesAsync(string studentId, ICollection<string> courses)
