@@ -57,7 +57,7 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpGet("AllLecturers")]
-        public async Task<IActionResult> GetAllLecturersInADepartment(NameDto departmentName)
+        public async Task<IActionResult> GetAllLecturersInADepartment([FromQuery]NameDto departmentName)
         {
             var response = await _departmentService.GetAllLecturersInADepartmentAsync(departmentName);
             return StatusCode(response.StatusCode, response);
@@ -65,7 +65,7 @@ namespace SchoolMgtAPI.Controllers
 
 
         [HttpGet("Courses")]
-        public async Task<IActionResult> GetDeparmentCourses(NameDto departmentName)
+        public async Task<IActionResult> GetDeparmentCourses([FromQuery]NameDto departmentName)
         {
             var response = await _departmentService.GetDeparmentCoursesAsync(departmentName);
             return StatusCode(response.StatusCode, response);

@@ -15,7 +15,6 @@ namespace Services.Interfaces
         Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInDepartmentAsync(NameDto department);
         Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentsInFacultyAsync(NameDto faculty);
         Task<Response<IEnumerable<ReadStudentResponseDto>>> ReadAllStudentAsync();
-        Task<Response<string>> DeactivateStudentAsync(RegistrationNumberDto registrationNumber);
         Task<Response<string>> CheckStudentIsActiveAsync(RegistrationNumberDto registrationNumber);
         Task<Response<IEnumerable<string>>> RegisterCoursesAsync(string studentId, ICollection<string> courses);
         Task<Response<IEnumerable<string>>> RemoveCoursesAsync(string studentId, ICollection<string> courses);

@@ -34,35 +34,36 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpGet("StudentsInALevel")]
-        public async Task<IActionResult> ReadAllStudentsInALevel(LevelDto requestDto)
+        public async Task<IActionResult> ReadAllStudentsInALevel([FromQuery]LevelDto requestDto)
         {
             var response = await _studentService.ReadAllStudentsInALevelAsync(requestDto);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("StudentsInADepartmentInALevel")]
-        public async Task<IActionResult> ReadAllStudentsInADepartmentInALevel(ReadDepartmentsStudentDto studentDto)
+        public async Task<IActionResult> ReadAllStudentsInADepartmentInALevel([FromQuery]ReadDepartmentsStudentDto studentDto)
         {
             var response = await _studentService.ReadAllStudentsInADepartmentInALevelAsync(studentDto);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("StudentsInAFacultyInALevel")]
-        public async Task<IActionResult> ReadAllStudentsInAFacultyInALevel(ReadFacultyStudentsDto studentsDto)
+        public async Task<IActionResult> ReadAllStudentsInAFacultyInALevel([FromQuery]ReadFacultyStudentsDto studentsDto)
         {
             var response = await _studentService.ReadAllStudentsInAFacultyInALevelAsync(studentsDto);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("StudentsInADepartment")]
-        public async Task<IActionResult> ReadAllStudentsInDepartment(NameDto department)
+
+        public async Task<IActionResult> ReadAllStudentsInDepartment([FromQuery]NameDto department)
         {
             var response = await _studentService.ReadAllStudentsInDepartmentAsync(department);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("StudentsInAFaculty")]
-        public async Task<IActionResult> ReadAllStudentsInFaculty(NameDto faculty)
+        public async Task<IActionResult> ReadAllStudentsInFaculty([FromQuery]NameDto faculty)
         {
             var response = await _studentService.ReadAllStudentsInFacultyAsync(faculty);
             return StatusCode(response.StatusCode, response);
@@ -75,15 +76,8 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPut("DeactivateStudent")]
-        public async Task<IActionResult> DeactivateStudent(RegistrationNumberDto registrationNumber)
-        {
-            var response = await _studentService.DeactivateStudentAsync(registrationNumber);
-            return StatusCode(response.StatusCode, response);
-        }
-
         [HttpGet("StudentIsActive")]
-        public async Task<IActionResult> CheckStudentIsActive(RegistrationNumberDto registrationNumber)
+        public async Task<IActionResult> CheckStudentIsActive([FromQuery]RegistrationNumberDto registrationNumber)
         {
             var response = await _studentService.CheckStudentIsActiveAsync(registrationNumber);
             return StatusCode(response.StatusCode, response);

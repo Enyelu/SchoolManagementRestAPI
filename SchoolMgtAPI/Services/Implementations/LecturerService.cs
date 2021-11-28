@@ -125,26 +125,6 @@ namespace Services.Implementations
             return Response<string>.Fail($"Unsuccessful. {responseCourse} was not added to {lecturer.AppUser.FirstName} with email: {CourseDto.LecturerEmail}.");
         }
 
-        public async Task<Response<string>> DeactivateLecturerAsync(EmailRequestDto lecturerEmail)
-        {
-            var lecturer = await _userManager.FindByEmailAsync(lecturerEmail.Email);
-
-            if (lecturer != null)
-            {
-                lecturer.IsActive = false;
-                lecturer.DateModified = DateTime.UtcNow.ToString();
-                var result = await _userManager.UpdateAsync(lecturer);
-
-                if (result.Succeeded)
-                {
-                    await _unitOfWork.SaveChangesAsync();
-                    return Response<string>.Success(null, "Deactivation was successful");
-                }
-                return Response<string>.Fail("an error occured while attempting to Deactivate lecturer");
-            }
-            return Response<string>.Fail("Unsuccessful. Lecturer not found");
-        }
-
         public async Task<Response<string>> UpdateLecturerAsync(LecturerUpdateDto lecturerDto, string lecturerEmail)
         {
             var lecturer = await _unitOfWork.Lecturer.GetLecturerDetailAsync(lecturerEmail);
