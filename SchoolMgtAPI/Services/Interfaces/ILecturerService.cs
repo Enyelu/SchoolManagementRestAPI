@@ -8,7 +8,6 @@ namespace Services.Interfaces
     {
         Task<Response<string>> RegisterLecturerAsync(RegisterLecturerDto lecturerDto);
         Task<Response<LecturerResponseDto>> ReadLecturerDetailAsync(EmailRequestDto lecturerEmail);
-        Task<Response<string>> DeactivateLecturerAsync(EmailRequestDto lecturerEmail);
         Task<Response<string>> UpdateLecturerAsync(LecturerUpdateDto lecturerDto, string lecturerEmail);
         Task<Response<string>> AssignCourseToLecturerAsync(AssignCourseDto CourseDto);
     }
