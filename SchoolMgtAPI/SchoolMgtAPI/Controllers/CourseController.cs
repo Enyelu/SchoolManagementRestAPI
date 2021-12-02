@@ -18,7 +18,7 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpPost("Course")]
-        public async Task<IActionResult> RegisterAsync(CourseDto courseDto)
+        public async Task<IActionResult> RegisterAsync([FromBody] CourseDto courseDto)
         {
             var response = await _courseService.AddCourseAsync(courseDto);
             return StatusCode(response.StatusCode, response);
@@ -39,7 +39,7 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateCourse(CourseUpdateDto courseUpdateDto, string courseCode)
+        public async Task<IActionResult> UpdateCourse([FromQuery]CourseUpdateDto courseUpdateDto, string courseCode)
         {
             var response = await _courseService.UpdateCourseAsync(courseUpdateDto, courseCode);
             return StatusCode(response.StatusCode, response);
