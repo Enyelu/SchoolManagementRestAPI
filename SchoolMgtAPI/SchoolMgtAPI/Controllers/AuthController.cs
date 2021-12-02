@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Models;
 using Services.Interfaces;
 using System.Threading.Tasks;
@@ -40,7 +39,7 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPatch("Reset-Password")]
+        [HttpGet("Reset-Password")]
         public async Task<IActionResult> ResetPassword([FromQuery]ResetPasswordModel resetPassword)
         {
             var response = await _authService.ResetPassword(resetPassword);
