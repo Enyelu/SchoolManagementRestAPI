@@ -10,8 +10,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Utilities.Interface.TokenGeneration;
 
-namespace Utilities.TokenGeneration
+namespace Utilities.Implementation.TokenGeneration
 {
     public class TokenGenerator : ITokenGenerator
     {
@@ -25,10 +26,11 @@ namespace Utilities.TokenGeneration
         {
             _userManager = userManager;
             _configuration = configuration;
-            Audience = env.IsDevelopment() ? _configuration.GetSection("Audience").Value : _configuration.GetSection("HerokuAudience").Value;
-            Issuer = env.IsDevelopment() ? _configuration.GetSection("Issuer").Value : _configuration.GetSection("HerokuIssuer").Value;
-            SecretKey = env.IsDevelopment() ? _configuration.GetSection("SecretKey").Value : _configuration.GetSection("HerokuSecretKey").Value;
+            Audience = env.IsDevelopment() ? _configuration["JwtSettings:Audience"] : _configuration["JwtSettings:HerokuAudience"];
+            Issuer = env.IsDevelopment() ? _configuration["JwtSettings:Issuer"] : _configuration["JwtSettings:HerokuIssuer"];
+            SecretKey = env.IsDevelopment() ? _configuration["JwtSettings:SecretKey"] : _configuration["HerokuSecretKey:HerokuSecretKey"];
         }
+        
         public async Task<string> GenerateTokenAsync(AppUser appUser)
         {
             
@@ -48,17 +50,25 @@ namespace Utilities.TokenGeneration
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
+
+            var securityKey =  new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
 
             var token = new JwtSecurityToken
                 (
                     audience: Audience,
                     issuer: Issuer,
                     signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256),
-                    expires: DateTime.Now.AddMinutes(30),
+                    expires: DateTime.Now.AddHours(1),
                     claims: claims
                 );
+            
+            
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public string GenerateRefreshToken()
+        {
+            return Guid.NewGuid().ToString();
         }
     }
 }
