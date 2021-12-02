@@ -16,7 +16,7 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(RegisterNonAcademicStaffDto NonAcademicStaffDto)
+        public async Task<IActionResult> Register([FromBody] RegisterNonAcademicStaffDto NonAcademicStaffDto)
         {
             var response = await _nonAcademicStaffService.RegisterNonAcademicStaff(NonAcademicStaffDto);
             return StatusCode(response.StatusCode, response);
@@ -37,7 +37,7 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateNonAcademicStaff(NonAcademicStaffUpdateDto staff, string staffEmail)
+        public async Task<IActionResult> UpdateNonAcademicStaff([FromQuery]NonAcademicStaffUpdateDto staff, string staffEmail)
         {
             var response = await _nonAcademicStaffService.UpdateNonAcademicStaffAsync(staff, staffEmail);
             return StatusCode(response.StatusCode, response);
