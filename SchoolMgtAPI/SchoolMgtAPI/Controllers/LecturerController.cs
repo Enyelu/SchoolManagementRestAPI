@@ -17,7 +17,7 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterLecturer(RegisterLecturerDto lecturerDto)
+        public async Task<IActionResult> RegisterLecturer([FromBody] RegisterLecturerDto lecturerDto)
         {
             var respose = await _lecturerService.RegisterLecturerAsync(lecturerDto);
             return StatusCode(respose.StatusCode, respose);
@@ -31,14 +31,14 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateLecturerAsync(LecturerUpdateDto lecturerDto, string lecturerEmail)
+        public async Task<IActionResult> UpdateLecturerAsync([FromQuery]LecturerUpdateDto lecturerDto, string lecturerEmail)
         {
             var respose = await _lecturerService.UpdateLecturerAsync(lecturerDto, lecturerEmail);
             return StatusCode(respose.StatusCode, respose);
         }
 
         [HttpPost("AssignCourses")]
-        public async Task<IActionResult> AssignCourseToLecturer(AssignCourseDto CourseDto)
+        public async Task<IActionResult> AssignCourseToLecturer([FromBody] AssignCourseDto CourseDto)
         {
             var response = await _lecturerService.AssignCourseToLecturerAsync(CourseDto);
             return StatusCode(response.StatusCode, response);

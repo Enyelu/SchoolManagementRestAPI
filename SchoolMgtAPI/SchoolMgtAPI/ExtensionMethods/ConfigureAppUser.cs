@@ -18,9 +18,9 @@ namespace SchoolMgtAPI.ExtensionMethods
                 options.Password.RequiredLength = 8;
                 options.SignIn.RequireConfirmedEmail = true;
             });
+           
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), services);
-            builder.AddEntityFrameworkStores<SchoolDbContext>()
-                .AddDefaultTokenProviders();
+            builder.AddEntityFrameworkStores<SchoolDbContext>().AddDefaultTokenProviders();
         }
     }
 }

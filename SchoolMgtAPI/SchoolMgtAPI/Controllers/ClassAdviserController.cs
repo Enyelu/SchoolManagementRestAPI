@@ -24,14 +24,14 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpPost("ClassAdviser")]
-        public async Task<IActionResult> AssignClassAdviser(AssignClassAdviserDto requestDto)
+        public async Task<IActionResult> AssignClassAdviser([FromBody] AssignClassAdviserDto requestDto)
         {
             var response = await _classAdviserService.AssignClassAdviserAsync(requestDto);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpPatch("DeactivateClassAdviser")]
-        public async Task<IActionResult> DeactivateClassAdviserAsync(ReadClassAdviserDto requestDto)
+        public async Task<IActionResult> DeactivateClassAdviserAsync([FromQuery]ReadClassAdviserDto requestDto)
         {
             var response = await _classAdviserService.DeactivateClassAdviserAsync(requestDto);
             return StatusCode(response.StatusCode, response);

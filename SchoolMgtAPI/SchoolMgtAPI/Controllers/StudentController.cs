@@ -27,7 +27,7 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterStudentAsync(RegisterStudentDto registerStudent)
+        public async Task<IActionResult> RegisterStudentAsync([FromBody] RegisterStudentDto registerStudent)
         {
             var response = await _studentService.RegisterStudentAsync(registerStudent);
             return StatusCode(response.StatusCode, response);
