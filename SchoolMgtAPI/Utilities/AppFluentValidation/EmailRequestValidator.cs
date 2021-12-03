@@ -12,7 +12,7 @@ namespace Utilities.AppFluentValidation
     {
         public EmailRequestValidator()
         {
-            RuleFor(x => x.Email).EmailAddress();
+            RuleFor(x => x.Email).EmailAddress().NotEmpty().WithMessage("Field cannot be empty").NotNull().WithMessage("Field cannot be null");
         }
     }
 }

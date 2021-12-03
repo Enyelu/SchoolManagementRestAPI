@@ -35,7 +35,7 @@ namespace SchoolMgtAPI.Controllers
 
         [HttpPost("Payment")]
         [Authorize(Roles = "Student")]
-        public async Task<IActionResult> PaymentAsync(PaymentModel paymentModel)
+        public async Task<IActionResult> PaymentAsync([FromBody] PaymentModel paymentModel)
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 

@@ -1,11 +1,14 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Models;
 using Services.Implementations;
 using Services.Interfaces;
 using Utilities.AppFluentValidation;
 using Utilities.AppUnitOfWork;
 using Utilities.Dtos;
+using Utilities.Implementation.TokenGeneration;
+using Utilities.Interface.TokenGeneration;
 
 namespace SchoolMgtAPI.ExtensionMethods
 {
@@ -25,7 +28,7 @@ namespace SchoolMgtAPI.ExtensionMethods
             services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<IAddressService, AddressService>();
             services.AddTransient<IAuthService, AuthService>();
-
+            services.AddTransient<ITokenGenerator, TokenGenerator>();
 
             services.AddTransient<IValidator<CourseDto>, CourseValidator>();
             services.AddTransient<IValidator<CourseUpdateDto>, CourseUpdateValidator>();
@@ -47,6 +50,9 @@ namespace SchoolMgtAPI.ExtensionMethods
             services.AddTransient<IValidator<AssignCourseDto>, AssignCourseValidator>();
             services.AddTransient<IValidator<ReadClassAdviserDto>, ReadClassAdviserValidator>();
             services.AddTransient<IValidator<AssignClassAdviserDto>, AssignClassAdviserValidator>();
+            services.AddTransient<IValidator<ConfirmEmailDto>, ConfirmEmailDtoValidator>();
+            services.AddTransient<IValidator<RefreshTokenRequestDto>, RefreshTokenRequestDtoValidator>();
+            services.AddTransient<IValidator<ResetPasswordModel>, ResetPasswordModelValidator>();
         }
     }
 }

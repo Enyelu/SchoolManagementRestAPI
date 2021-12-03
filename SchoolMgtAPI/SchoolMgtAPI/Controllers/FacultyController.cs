@@ -17,14 +17,14 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpPost("Faculty")]
-        public async Task<IActionResult> AddFaculty(NameDto requestDto)
+        public async Task<IActionResult> AddFaculty([FromBody] NameDto requestDto)
         {
             var response = await _facultyService.AddFaculty(requestDto);
             return StatusCode(response.StatusCode,response);
         }
 
         [HttpPatch("Deactivate")]
-        public async Task<IActionResult> DeactivateFaculty(NameDto requestDto)
+        public async Task<IActionResult> DeactivateFaculty([FromQuery]NameDto requestDto)
         {
             var response = await _facultyService.DeactivateFacultyAsync(requestDto);
             return StatusCode(response.StatusCode, response);

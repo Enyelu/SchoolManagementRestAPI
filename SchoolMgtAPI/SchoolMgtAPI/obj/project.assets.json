@@ -6192,7 +6192,8 @@
       "PayStack.Net >= 0.7.7",
       "Seeder >= 1.0.0",
       "Services >= 1.0.0",
-      "Swashbuckle.AspNetCore >= 5.6.3"
+      "Swashbuckle.AspNetCore >= 5.6.3",
+      "Utilities >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -6230,6 +6231,9 @@
             },
             "C:\\Users\\hp\\Documents\\PersonalProjects\\SchoolMgtAPI\\Services\\Services.csproj": {
               "projectPath": "C:\\Users\\hp\\Documents\\PersonalProjects\\SchoolMgtAPI\\Services\\Services.csproj"
+            },
+            "C:\\Users\\hp\\Documents\\PersonalProjects\\SchoolMgtAPI\\Utilities\\Utilities.csproj": {
+              "projectPath": "C:\\Users\\hp\\Documents\\PersonalProjects\\SchoolMgtAPI\\Utilities\\Utilities.csproj"
             }
           }
         }
