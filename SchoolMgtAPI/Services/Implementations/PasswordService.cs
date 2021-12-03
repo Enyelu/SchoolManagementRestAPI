@@ -48,16 +48,16 @@ namespace Services.Implementations
                 var encodedRestPasswordToken = Encoding.UTF8.GetBytes(resetPasswordToken);
                 var validResetPasswordToken = WebEncoders.Base64UrlEncode(encodedRestPasswordToken);
 
-                string url = $"{_configuration["appURL"]}/api/ResetPassword?email={email}&token={validResetPasswordToken}";
+                string url = $"{_configuration["appURL"]}/api/Auth/Reset-Password?email={email}&token={validResetPasswordToken}";
                 
                 var mail = new EmailRequest()
                 {
                     ToEmail = email,
-                    Subject = "<h1>Reset Password</h1>",
+                    Subject = "Reset Password>",
                     Body = $"<p> Dear {user.FirstName}, to reset your password, <a href='{url}'>click here</a></p>",
                 };
 
-                var sendMail = await _mailService.SendMailAsync(mail);
+                await _mailService.SendMailAsync(mail);
 
                 return Response<string>.Success(null, $"Visit {email} to confirm your password reset");
             }
@@ -69,10 +69,22 @@ namespace Services.Implementations
 
             if(user != null)
             {
-                if(resetPasswordModel.NewPassword == resetPasswordModel.ConfirmNewPassword)
+                if (resetPasswordModel.NewPassword == resetPasswordModel.ConfirmNewPassword)
                 {
-                    await _userManager.ResetPasswordAsync(user, resetPasswordModel.Token, resetPasswordModel.NewPassword);
-                    return Response<string>.Success(null, "Password reset was successful");
+                    var decodeToken = WebEncoders.Base64UrlDecode(resetPasswordModel.Token);
+                    var validDecodedToken = Encoding.UTF8.GetString(decodeToken);
+
+                    var tokenPurpose = UserManager<AppUser>.ResetPasswordTokenPurpose;
+                    var tokenProvider = _userManager.Options.Tokens.PasswordResetTokenProvider;
+                    var verifyToken = await _userManager.VerifyUserTokenAsync(user, tokenProvider, tokenPurpose, validDecodedToken);
+
+                    if(verifyToken)
+                    {
+                        await _userManager.ResetPasswordAsync(user, resetPasswordModel.Token, resetPasswordModel.NewPassword);
+                        
+                        return Response<string>.Success(null, "Password reset was successful");
+                    }
+                    return Response<string>.Fail("Password reset was unsuccessful. Specified token is not valid for this user and purpose");
                 }
                 return Response<string>.Fail("Password reset was unsuccessful. password and confirm password mismatch");
             }

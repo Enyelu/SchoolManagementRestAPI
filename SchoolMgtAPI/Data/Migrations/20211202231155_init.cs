@@ -103,6 +103,8 @@ namespace Data.Migrations
                     BirthDate = table.Column<string>(type: "text", nullable: true),
                     DateCreated = table.Column<string>(type: "text", nullable: true),
                     DateModified = table.Column<string>(type: "text", nullable: true),
+                    RefereshToken = table.Column<string>(type: "text", nullable: true),
+                    RefereshTokenExpiry = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     AddressId = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

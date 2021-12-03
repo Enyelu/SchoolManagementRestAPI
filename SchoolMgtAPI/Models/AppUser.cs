@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace Models
 {
@@ -14,6 +15,8 @@ namespace Models
         public string BirthDate { get; set; }
         public string DateCreated { get; set; }
         public string DateModified { get; set; }
+        public string RefereshToken { get; set; } 
+        public DateTime RefereshTokenExpiry { get; set; }
         public Address Address { get; set; }
         public Lecturer Lecturer {  get; set; }
         public Student Student { get; set; }

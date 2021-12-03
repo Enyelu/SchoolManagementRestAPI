@@ -276,6 +276,12 @@ namespace Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("RefereshToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("RefereshTokenExpiry")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
