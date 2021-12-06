@@ -6182,7 +6182,6 @@
     "net5.0": [
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 8.1.1",
       "Data >= 1.0.0",
-      "FluentValidation >= 10.3.4",
       "FluentValidation.AspNetCore >= 10.3.4",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 5.0.12",
       "Microsoft.EntityFrameworkCore.Design >= 5.0.11",
@@ -6251,10 +6250,6 @@
           "AutoMapper.Extensions.Microsoft.DependencyInjection": {
             "target": "Package",
             "version": "[8.1.1, )"
-          },
-          "FluentValidation": {
-            "target": "Package",
-            "version": "[10.3.4, )"
           },
           "FluentValidation.AspNetCore": {
             "target": "Package",
