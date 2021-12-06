@@ -17,7 +17,7 @@ namespace SchoolMgtAPI.Controllers
             _authService = authService;
         }
 
-        [HttpGet("Confirm-Email")]
+        [HttpPost("Confirm-Email")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailDto confirm)
         {
             var response = await _authService.ConfirmEmailAsync(confirm.Email, confirm.Token);
@@ -39,7 +39,7 @@ namespace SchoolMgtAPI.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("Reset-Password")]
+        [HttpPatch("Reset-Password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel resetPassword)
         {
             var response = await _authService.ResetPassword(resetPassword);
