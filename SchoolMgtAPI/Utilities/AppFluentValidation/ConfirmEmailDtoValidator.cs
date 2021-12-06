@@ -8,7 +8,6 @@ namespace Utilities.AppFluentValidation
         public ConfirmEmailDtoValidator()
         {
             RuleFor(x => x.Email).EmailAddress().NotEmpty().WithMessage("Field cannot be empty");
-            RuleFor(x => x.Token).NotEmpty().WithMessage("Field cannot be empty").Null().WithMessage("Field cannot be null");
         }
     }
 }

@@ -18,7 +18,7 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpGet("Confirm-Email")]
-        public async Task<IActionResult> ConfirmEmail([FromQuery]ConfirmEmailDto confirm)
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailDto confirm)
         {
             var response = await _authService.ConfirmEmailAsync(confirm.Email, confirm.Token);
             return StatusCode(response.StatusCode, response);
@@ -33,26 +33,24 @@ namespace SchoolMgtAPI.Controllers
         }
 
         [HttpGet("Forgot-Password")]
-        public async Task<IActionResult> ForgotPassword( [FromQuery]EmailRequestDto forgortPassword)
+        public async Task<IActionResult> ForgotPassword( [FromBody] EmailRequestDto forgortPassword)
         {
             var response = await _authService.ForgotPassword(forgortPassword);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("Reset-Password")]
-        public async Task<IActionResult> ResetPassword([FromQuery]ResetPasswordModel resetPassword)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel resetPassword)
         {
             var response = await _authService.ResetPassword(resetPassword);
             return StatusCode(response.StatusCode, response);
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken( [FromBody] RefreshTokenRequestDto requestDto)
+        public async Task<IActionResult> RefreshToken( [FromQuery] RefreshTokenRequestDto requestDto)
         {
             var response = await _authService.RefreshToken(requestDto);
             return StatusCode(response.StatusCode, response);
         }
-
-
     }
 }

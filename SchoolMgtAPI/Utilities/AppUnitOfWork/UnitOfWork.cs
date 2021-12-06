@@ -18,8 +18,6 @@ namespace Utilities.AppUnitOfWork
         private IStudentRepo _student;
         private ILecturerRepo _lecturer;
         private INonAcademicStaffPositionRepo _nonAcademicStaffPositionRepo;
-
-
         private readonly SchoolDbContext _context;
 
         public UnitOfWork(SchoolDbContext context)
