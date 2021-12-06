@@ -62,7 +62,7 @@ namespace Services.Implementations
                     var encodedEmailToken = Encoding.UTF8.GetBytes(emailToken);
                     var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-                    var callbackUrl = $"{baseUrl}/api/Auth/ConfirmEmail?email={appUser.Email}&token={validEmailToken}";
+                    var callbackUrl = $"{baseUrl}/api/Auth/Confirm-Email?email={appUser.Email}&token={validEmailToken}";
 
                     var mail = new EmailRequest()
                     {
