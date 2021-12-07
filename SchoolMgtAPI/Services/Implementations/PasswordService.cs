@@ -53,7 +53,7 @@ namespace Services.Implementations
                 var mail = new EmailRequest()
                 {
                     ToEmail = email,
-                    Subject = "Reset Password>",
+                    Subject = "Reset Password",
                     Body = $"<p> Dear {user.FirstName}, to reset your password, <a href='{url}'>click here</a></p>",
                 };
 
