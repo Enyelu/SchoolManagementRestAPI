@@ -50,7 +50,6 @@ namespace SchoolMgtAPI.ExtensionMethods
             services.AddTransient<IValidator<AssignCourseDto>, AssignCourseValidator>();
             services.AddTransient<IValidator<ReadClassAdviserDto>, ReadClassAdviserValidator>();
             services.AddTransient<IValidator<AssignClassAdviserDto>, AssignClassAdviserValidator>();
-            services.AddTransient<IValidator<ConfirmEmailDto>, ConfirmEmailDtoValidator>();
             services.AddTransient<IValidator<RefreshTokenRequestDto>, RefreshTokenRequestDtoValidator>();
             services.AddTransient<IValidator<ResetPasswordModel>, ResetPasswordModelValidator>();
         }

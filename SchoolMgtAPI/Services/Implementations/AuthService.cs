@@ -72,9 +72,9 @@ namespace Services.Implementations
             return Response<LoginResponseDto>.Fail($"{loginDto.Email} is not a registered user");
         }
 
-        public async Task<Response<string>> ForgotPassword(EmailRequestDto passwordRequest)
+        public async Task<Response<string>> ForgotPassword(string email)
         {
-            return await _passwordService.ForgotPasswordAsync(passwordRequest.Email);
+            return await _passwordService.ForgotPasswordAsync(email);
         }
 
         public async Task<Response<string>> ResetPassword(ResetPasswordModel passwordRequest)
